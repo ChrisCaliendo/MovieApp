@@ -21,6 +21,8 @@ namespace MovieApp.Controllers
             _mapper = mapper;
         }
 
+        //Get Requests
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Tag>))]
 
@@ -40,7 +42,7 @@ namespace MovieApp.Controllers
 
         public IActionResult GetTags(int tagId)
         {
-            if (!_tagRepository.doesTagExist(tagId))
+            if (!_tagRepository.DoesTagExist(tagId))
                 return NotFound();
 
             var shows = _mapper.Map<TagDto>(_tagRepository.GetTag(tagId));
@@ -57,7 +59,7 @@ namespace MovieApp.Controllers
 
         public IActionResult GetTags(string tagName)
         {
-            if (!_tagRepository.doesTagExist(tagName))
+            if (!_tagRepository.DoesTagExist(tagName))
                 return NotFound();
 
             var shows = _mapper.Map<TagDto>(_tagRepository.GetTag(tagName));
@@ -75,7 +77,7 @@ namespace MovieApp.Controllers
         public IActionResult GetShowsWithTag(int tagId)
         {
 
-            if (!_tagRepository.doesTagExist(tagId))
+            if (!_tagRepository.DoesTagExist(tagId))
                 return NotFound();
 
             var tags = _mapper.Map<List<ShowDto>>(_tagRepository.GetTags());
@@ -83,6 +85,37 @@ namespace MovieApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(tags);
+        }
+
+        //Post Requests
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateTag([FromBody] TagDto tagInfo)
+        {
+
+            if (tagInfo == null)
+                return BadRequest(ModelState);
+            var tag = _tagRepository.GetTags()
+                .Where(t => t.Name.Trim().ToUpper() == tagInfo.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if(tag != null)
+            {
+                ModelState.AddModelError("", "Tag already exists");
+                return StatusCode(422, ModelState);
+            }
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var tagMap = _mapper.Map<Tag>(tagInfo);
+            if (!_tagRepository.CreateTag(tagMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Tag Successfully Created");
         }
     }
 }

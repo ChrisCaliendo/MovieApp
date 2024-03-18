@@ -2,9 +2,9 @@
 {
     public class ShowBinge
     {
-        public int? showId { get; set; }
-        public int? bingeId { get; set; }
-        public Show? show { get; set; }
-        public Binge? binge { get; set; }
+        public int? ShowId { get; set; }
+        public int? BingeId { get; set; }
+        public Show? Show { get; set; }
+        public Binge? Binge { get; set; }
     }
 }

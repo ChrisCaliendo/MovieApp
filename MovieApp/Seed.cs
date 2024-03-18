@@ -15,32 +15,34 @@ namespace MovieApp
         {
             if (!dataContext.Users.Any())
             {
+                //Tag = new Tag() { name = "" };
                 var users = new List<User>()
                 {
                     new User("Dave", "xxx")
                     {
-                        binges = new List<Binge>()
+                        Binges = new List<Binge>()
                         {
+                            
                             new Binge {
                                 
-                                name = "scary movies",
-                                description = "a buncha scary movies",
-                                showBinges = new List<ShowBinge>() 
+                                Name = "scary movies",
+                                Description = "a buncha scary movies",
+                                ShowBinges = new List<ShowBinge>() 
                                 {
-                                    new ShowBinge{ show = new Show() {  title = "Avatar"} },
-                                    new ShowBinge{ show = new Show() {  title = "Cake Boss"} },
-                                    new ShowBinge{ show = new Show() {  title = "Impractical Jokers"} }
+                                    new ShowBinge{ Show = new Show() {  Title = "Avatar" } },
+                                    new ShowBinge{ Show = new Show() {  Title = "Cake Boss"} },
+                                    new ShowBinge{ Show = new Show() {  Title = "Impractical Jokers"} }
                                 }
                             },
                             new Binge {
                                 
-                                name = "funny movies",
-                                description = "a buncha funny movies",
-                                showBinges = new List<ShowBinge>()
+                                Name = "funny movies",
+                                Description = "a buncha funny movies",
+                                ShowBinges = new List<ShowBinge>()
                                 {
-                                    new ShowBinge{ show = new Show() { title = "Neo"} },
-                                    new ShowBinge{ show = new Show() { title = "Cake Loser"} },
-                                    new ShowBinge{ show = new Show() { title = "Impractical Fools"} }
+                                    new ShowBinge{ Show = new Show() { Title = "Neo"} },
+                                    new ShowBinge{ Show = new Show() { Title = "Cake Loser"} },
+                                    new ShowBinge{ Show = new Show() { Title = "Impractical Fools"} }
                                 }
                             }
                         },

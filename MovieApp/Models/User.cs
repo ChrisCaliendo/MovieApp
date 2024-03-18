@@ -4,21 +4,21 @@
     {
         public User(string name, string password)
         {
-            this.name = name;
-            this.password = password;
-            this.emailConfirmed = false;
-            favoriteShows = new List<Show>();
-            favoriteTags = new List<Tag>();
-            binges = new List<Binge>();
+            this.Name = name;
+            this.Password = password;
+            this.EmailConfirmed = false;
+            FavoriteShows = new List<Show>();
+            FavoriteTags = new List<Tag>();
+            Binges = new List<Binge>();
         }
 
-        public int id { get; set; }
-        public string? name { get; set; } = string.Empty;
-        public string? email { get; set; }
-        public string? password { get; set; }
-        private Boolean? emailConfirmed { get; set; }
-        public ICollection<Show> favoriteShows { get; set; }
-        public ICollection<Tag> favoriteTags { get; set; }
-        public ICollection<Binge> binges { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+        private Boolean? EmailConfirmed { get; set; }
+        public ICollection<Show> FavoriteShows { get; set; }
+        public ICollection<Tag> FavoriteTags { get; set; }
+        public ICollection<Binge> Binges { get; set; }
     }
 }

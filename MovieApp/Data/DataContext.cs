@@ -23,27 +23,27 @@ namespace MovieApp.Data
 
             //Joining Show with Tag using showId and tagId as keys
             modelBuilder.Entity<ShowTag>()
-                .HasKey(st => new {st.showId, st.tagId });
+                .HasKey(st => new {st.ShowId, st.TagId });
             modelBuilder.Entity<ShowTag>()
-                .HasOne(s => s.show)
-                .WithMany(st => st.showTags)
-                .HasForeignKey(t => t.showId);
+                .HasOne(s => s.Show)
+                .WithMany(st => st.ShowTags)
+                .HasForeignKey(t => t.ShowId);
             modelBuilder.Entity<ShowTag>()
-                .HasOne(t => t.tag)
-                .WithMany(st => st.showTags)
-                .HasForeignKey(s => s.tagId);
+                .HasOne(t => t.Tag)
+                .WithMany(st => st.ShowTags)
+                .HasForeignKey(s => s.TagId);
 
             //Joining Show with Binge using showId and bingeId as keys
             modelBuilder.Entity<ShowBinge>()
-                .HasKey(pc => new { pc.showId, pc.bingeId });
+                .HasKey(pc => new { pc.ShowId, pc.BingeId });
             modelBuilder.Entity<ShowBinge>()
-                .HasOne(s => s.show)
-                .WithMany(sb => sb.showBinges)
-                .HasForeignKey(b => b.showId);
+                .HasOne(s => s.Show)
+                .WithMany(sb => sb.ShowBinges)
+                .HasForeignKey(b => b.ShowId);
             modelBuilder.Entity<ShowBinge>()
-                .HasOne(b => b.binge)
-                .WithMany(sb => sb.showBinges)
-                .HasForeignKey(s => s.bingeId);
+                .HasOne(b => b.Binge)
+                .WithMany(sb => sb.ShowBinges)
+                .HasForeignKey(s => s.BingeId);
         }
 
 

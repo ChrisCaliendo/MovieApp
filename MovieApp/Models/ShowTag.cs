@@ -2,9 +2,9 @@
 {
     public class ShowTag
     {
-        public int? showId { get; set; }
-        public int? tagId { get; set; }
-        public Show? show { get; set; }
-        public Tag? tag { get; set; }
+        public int? ShowId { get; set; }
+        public int? TagId { get; set; }
+        public Show? Show { get; set; }
+        public Tag? Tag { get; set; }
     }
 }

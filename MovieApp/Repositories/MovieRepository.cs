@@ -13,29 +13,45 @@ namespace MovieApp.Repositories
             _context = context;
         }
 
-        public bool doesShowExist(int id)
+        //Read Methods
+
+        public bool DoesShowExist(int id)
         {
-            return _context.Shows.Any(s => s.id == id);
+            return _context.Shows.Any(s => s.Id == id);
         }
 
         public Show GetShow(int id)
         {
-            return _context.Shows.Where(s => s.id == id).FirstOrDefault();
+            return (Show)_context.Shows.Where(s => s.Id == id).FirstOrDefault();
         }
 
         public Show GetShow(string title)
         {
-            return _context.Shows.Where(s => s.title == title).FirstOrDefault();
+            return (Show)_context.Shows.Where(s => s.Title == title).FirstOrDefault();
         }
 
         public ICollection<Show> GetShows()
         {
-            return _context.Shows.OrderBy(s => s.id).ToList();
+            return _context.Shows.OrderBy(s => s.Id).ToList();
         }
 
         public ICollection<Tag> GetTagsOfShow(int showId)
         {
-            return _context.ShowTags.Where(x => x.showId == showId).Select(t => t.tag).ToList();
+            return (ICollection<Tag>)_context.ShowTags.Where(x => x.ShowId == showId).Select(t => t.Tag).ToList();
+        }
+
+        //Edit Methods
+
+        public bool CreateShow(Show show)
+        {
+            _context.Add(show);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

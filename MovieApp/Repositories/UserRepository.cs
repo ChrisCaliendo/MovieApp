@@ -13,44 +13,60 @@ namespace MovieApp.Repositories
             _context = context;
         }
 
-        public bool doesUserExist(string username)
+        //Read Methods
+
+        public bool DoesUserExist(string username)
         {
-            return _context.Users.Any(s => s.name == username);
+            return _context.Users.Any(s => s.Name == username);
         }
 
-        public bool doesUserExist(int id)
+        public bool DoesUserExist(int id)
         {
-            return _context.Users.Any(s => s.id == id);
+            return _context.Users.Any(s => s.Id == id);
         }
 
         public ICollection<User> GetAllUsers()
         {
-            return _context.Users.OrderBy(t => t.id).ToList();
+            return _context.Users.OrderBy(t => t.Id).ToList();
         }
 
         public User GetUser(int id)
         {
-            return _context.Users.Where(s => s.id == id).FirstOrDefault();
+            return _context.Users.Where(s => s.Id == id).FirstOrDefault();
         }
 
         public User GetUser(string name)
         {
-            return _context.Users.Where(s => s.name == name).FirstOrDefault();
+            return _context.Users.Where(s => s.Name == name).FirstOrDefault();
         }
 
         public ICollection<Show> GetFavoriteShows(int userId)
         {
-            return _context.Users.Where(u => u.id == userId).Select(s => s.favoriteShows).FirstOrDefault();
+            return _context.Users.Where(u => u.Id == userId).Select(s => s.FavoriteShows).FirstOrDefault();
         }
 
         public ICollection<Tag> GetFavoriteTags(int userId)
         {
-            return _context.Users.Where(u => u.id == userId).Select(t => t.favoriteTags).FirstOrDefault();
+            return _context.Users.Where(u => u.Id == userId).Select(t => t.FavoriteTags).FirstOrDefault();
         }
 
         public ICollection<Binge> GetUserBinges(int userId)
         {
-            return _context.Users.Where(u => u.id == userId).Select(b => b.binges).FirstOrDefault();
+            return _context.Users.Where(u => u.Id == userId).Select(b => b.Binges).FirstOrDefault();
+        }
+
+        //Edit Methods
+
+        public bool CreateUser(User user)
+        {
+            _context.Add(user);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

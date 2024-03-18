@@ -21,6 +21,8 @@ namespace MovieApp.Controllers
             _mapper = mapper;
         }
 
+        //Get Requests
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
 
@@ -39,7 +41,7 @@ namespace MovieApp.Controllers
 
         public IActionResult getUser(int userId)
         {
-            if (!_userRepository.doesUserExist(userId))
+            if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
             var shows = _mapper.Map<UserDto>(_userRepository.GetUser(userId));
@@ -56,7 +58,7 @@ namespace MovieApp.Controllers
 
         public IActionResult getUser(string userId)
         {
-            if (!_userRepository.doesUserExist(userId))
+            if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
             var shows = _mapper.Map<UserDto>(_userRepository.GetUser(userId));
@@ -73,7 +75,7 @@ namespace MovieApp.Controllers
 
         public IActionResult getUserBinges(int userId)
         {
-            if (!_userRepository.doesUserExist(userId))
+            if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
             var shows = _mapper.Map<BingeDto>(_userRepository.GetUserBinges(userId));
@@ -90,7 +92,7 @@ namespace MovieApp.Controllers
 
         public IActionResult getFavoriteTags(int userId)
         {
-            if (!_userRepository.doesUserExist(userId))
+            if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
             var shows = _mapper.Map<TagDto>(_userRepository.GetFavoriteTags(userId));
@@ -107,7 +109,7 @@ namespace MovieApp.Controllers
 
         public IActionResult getFavoriteShows(int userId)
         {
-            if (!_userRepository.doesUserExist(userId))
+            if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
             var shows = _mapper.Map<ShowDto>(_userRepository.GetFavoriteShows(userId));
@@ -116,6 +118,37 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(shows);
+        }
+
+        //Post Requests
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateShow([FromBody] UserDto userInfo)
+        {
+
+            if (userInfo == null)
+                return BadRequest(ModelState);
+            var user = _userRepository.GetAllUsers()
+                .Where(u => u.Name.Trim().ToUpper() == userInfo.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (user != null)
+            {
+                ModelState.AddModelError("", "User already exists");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userMap = _mapper.Map<User>(userInfo);
+            if (!_userRepository.CreateUser(userMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("User Successfully Created");
         }
 
 

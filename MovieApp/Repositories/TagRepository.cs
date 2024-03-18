@@ -13,34 +13,50 @@ namespace MovieApp.Repositories
             _context = context;
         }
 
-        public bool doesTagExist(int id)
+        //Read Methods
+
+        public bool DoesTagExist(int id)
         {
-            return _context.Tags.Any(t => t.id == id);
+            return _context.Tags.Any(t => t.Id == id);
         }
 
-        public bool doesTagExist(string name)
+        public bool DoesTagExist(string name)
         {
-            return _context.Tags.Any(t => t.name == name);
+            return _context.Tags.Any(t => t.Name == name);
         }
 
         public Tag GetTag(int id)
         {
-            return _context.Tags.Where(t => t.id == id).FirstOrDefault();
+            return _context.Tags.Where(t => t.Id == id).FirstOrDefault();
         }
 
         public Tag GetTag(string name)
         {
-            return _context.Tags.Where(t => t.name == name).FirstOrDefault();
+            return _context.Tags.Where(t => t.Name == name).FirstOrDefault();
         }
 
         public ICollection<Show> GetShowsWithTag(int tagId)
         {
-            return _context.ShowTags.Where(x => x.tagId == tagId).Select(t => t.show).ToList();
+            return (ICollection<Show>)_context.ShowTags.Where(x => x.TagId == tagId).Select(t => t.Show).ToList();
         }
 
         public ICollection<Tag> GetTags()
         {
-            return _context.Tags.OrderBy(t => t.id).ToList();
+            return _context.Tags.OrderBy(t => t.Id).ToList();
+        }
+
+        //Edit Methods
+
+        public bool CreateTag(Tag tag)
+        {
+            _context.Add(tag);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

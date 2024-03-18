@@ -13,38 +13,53 @@ namespace MovieApp.Repositories
             _context = context;
         }
 
+        //Read Methods
+
         public bool doesBingeExist(int bingeId)
         {
-            return _context.Binges.Any(s => s.id == bingeId);
+            return _context.Binges.Any(s => s.Id == bingeId);
         }
 
         public Binge GetBinge(int bingeId)
         {
-            return _context.Binges.Where(s => s.id == bingeId).FirstOrDefault();
+            return _context.Binges.Where(s => s.Id == bingeId).FirstOrDefault();
         }
 
         public int GetBingeTimespan(int bingeId)
         {
-            var ts = _context.Binges.Where(s => s.id == bingeId);
+            var ts = _context.Binges.Where(s => s.Id == bingeId);
             if (ts.Count() <= 0) return 0;
-            return (int)ts.Sum(t => t.timespan);
+            return (int)ts.Sum(t => t.Timespan);
         }
 
         public ICollection<Binge> GetPublicBinges()
         {
-            return _context.Binges.OrderBy(t => t.id).ToList();
+            return _context.Binges.OrderBy(t => t.Id).ToList();
         }
 
         public ICollection<Show> GetShowsInBinge(int bingeId)
         {
-            return _context.ShowBinges.Where(x => x.bingeId == bingeId).Select(t => t.show).ToList();
+            return (ICollection<Show>)_context.ShowBinges.Where(x => x.BingeId == bingeId).Select(t => t.Show).ToList();
         }
 
         public int GetUnknownTimespans(int bingeId)
         {
-            var ts = _context.Binges.Where(s => s.id == bingeId && (s.timespan < 0 || s.timespan == null));
+            var ts = _context.Binges.Where(s => s.Id == bingeId && (s.Timespan < 0 || s.Timespan == null));
             return ts.Count();
         }
 
+        //Edit Methods
+
+        public bool CreateBinge(Binge binge)
+        {
+            _context.Add(binge);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace MovieApp.Controllers
     public class BingeController : Controller
     {
         private readonly IBingeRepository _bingeRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
         public BingeController(IBingeRepository bingeRepository, IMapper mapper)
@@ -21,6 +22,8 @@ namespace MovieApp.Controllers
             _bingeRepository = bingeRepository;
             _mapper = mapper;
         }
+
+        //Get Requests
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Binge>))]
@@ -65,6 +68,37 @@ namespace MovieApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(tags);
+        }
+
+        //Post Requests
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateShow([FromBody] BingeDto bingeInfo)
+        {
+
+            if (bingeInfo == null)
+                return BadRequest(ModelState);
+            var user = _bingeRepository.GetPublicBinges()
+                .Where(u => u.Name.Trim().ToUpper() == bingeInfo.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (user != null)
+            {
+                ModelState.AddModelError("", "Binge already exists");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var bingeMap = _mapper.Map<Binge>(bingeInfo);
+            if (!_bingeRepository.CreateBinge(bingeMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Binge Successfully Created");
         }
     }
 }
