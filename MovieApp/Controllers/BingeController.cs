@@ -34,5 +34,37 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
+        [HttpGet("{bingeId}")]
+        [ProducesResponseType(200, Type = typeof(Show))]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetBinge(int bingeId)
+        {
+            if (!_bingeRepository.doesBingeExist(bingeId))
+                return NotFound();
+
+            var shows = _mapper.Map<BingeDto>(_bingeRepository.GetBinge(bingeId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(shows);
+        }
+
+        [HttpGet("{bingeId}/shows")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetShowTags(int bingeId)
+        {
+            if (!_bingeRepository.doesBingeExist(bingeId))
+                return NotFound();
+
+            var tags = _mapper.Map<List<ShowDto>>(_bingeRepository.GetShowsInBinge(bingeId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(tags);
+        }
     }
 }
