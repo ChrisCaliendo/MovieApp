@@ -1,4 +1,6 @@
-﻿namespace MovieApp.Interfaces
+﻿using MovieApp.Models;
+
+namespace MovieApp.Interfaces
 {
     public interface IUserRepository
     {
@@ -7,6 +9,11 @@
 
         bool isEmailConfirmed(int userId);
 
+        ICollection<Show> GetFavoriteShows(int userId);
+
+        ICollection<Tag> GetFavoriteTags(int userId);
+
+        ICollection<Binge> GetUserBinges(int userId);
 
     }
 }
