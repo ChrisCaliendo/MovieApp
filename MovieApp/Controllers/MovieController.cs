@@ -4,6 +4,7 @@ using MovieApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MovieApp.Dto;
+using MovieApp.Repositories;
 
 namespace MovieApp.Controllers
 {
@@ -23,7 +24,6 @@ namespace MovieApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
-
 
         public IActionResult GetShows()
         {
@@ -57,7 +57,14 @@ namespace MovieApp.Controllers
 
         public IActionResult GetShowTags(int showId)
         {
-            return NotFound();
+            if (!_movieRepository.doesShowExist(showId))
+                return NotFound();
+
+            var tags = _mapper.Map<List<TagDto>>(_movieRepository.GetTagsOfShow(showId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(tags);
         }
 
 

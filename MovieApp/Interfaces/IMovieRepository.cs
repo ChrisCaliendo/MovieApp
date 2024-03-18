@@ -8,6 +8,7 @@ namespace MovieApp.Interfaces
         Show GetShow(int id);
         Show GetShow(string title);
         bool doesShowExist(int id);
+        ICollection<Tag> GetTagsOfShow(int id);
 
     }
 }

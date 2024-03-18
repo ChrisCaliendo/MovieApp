@@ -4,11 +4,11 @@ namespace MovieApp.Interfaces
 {
     public interface IBingeRepository
     {
-        ICollection<Tag> GetPublicBinges();
+        ICollection<Binge> GetPublicBinges();
         bool doesBingeExist(int bingeId);
         Binge GetBinge(int bingeId);
         ICollection<Show> GetShowsInBinge(int bingeId);
         int GetBingeTimespan(int bingeId);
-        bool GetUnknownTimespans(int bingeId);
+        int GetUnknownTimespans(int bingeId);
     }
 }

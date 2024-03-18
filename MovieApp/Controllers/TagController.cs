@@ -34,7 +34,7 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("tagById/{tagId}")]
+        [HttpGet("/tagById/{tagId}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
@@ -51,7 +51,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("tagByName/{tagName}")]
+        [HttpGet("/tagByName/{tagName}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
@@ -78,7 +78,7 @@ namespace MovieApp.Controllers
             if (!_tagRepository.doesTagExist(tagId))
                 return NotFound();
 
-            var tags = _mapper.Map<List<TagDto>>(_tagRepository.GetTags());
+            var tags = _mapper.Map<List<ShowDto>>(_tagRepository.GetTags());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

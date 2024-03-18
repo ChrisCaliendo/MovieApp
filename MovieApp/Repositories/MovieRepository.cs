@@ -33,5 +33,9 @@ namespace MovieApp.Repositories
             return _context.Shows.OrderBy(s => s.id).ToList();
         }
 
+        public ICollection<Tag> GetTagsOfShow(int showId)
+        {
+            return _context.ShowTags.Where(x => x.showId == showId).Select(t => t.tag).ToList();
+        }
     }
 }
