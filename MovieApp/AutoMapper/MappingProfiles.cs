@@ -9,6 +9,7 @@ namespace MovieApp.AutoMapper
 
         public MappingProfiles() {
             CreateMap<Show, ShowDto>();
+            CreateMap<Tag, TagDto>();
         }
     }
 }
