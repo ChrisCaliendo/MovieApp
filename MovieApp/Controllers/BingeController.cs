@@ -17,9 +17,10 @@ namespace MovieApp.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public BingeController(IBingeRepository bingeRepository, IMapper mapper)
+        public BingeController(IBingeRepository bingeRepository, IUserRepository userRepository, IMapper mapper)
         {
             _bingeRepository = bingeRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -75,7 +76,7 @@ namespace MovieApp.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateShow([FromBody] BingeDto bingeInfo)
+        public IActionResult CreateShow([FromQuery] int userId, [FromBody] BingeDto bingeInfo)
         {
 
             if (bingeInfo == null)
@@ -93,6 +94,15 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
 
             var bingeMap = _mapper.Map<Binge>(bingeInfo);
+
+            if (_userRepository.DoesUserExist(userId) == false)
+            {
+                ModelState.AddModelError("", "User doesnt exist, Cannot attribute Binge to nonexistant User");
+                return StatusCode(422, ModelState);
+            }
+            bingeMap.UserId = userId;
+            bingeMap.Author = _userRepository.GetUser(userId);
+
             if (!_bingeRepository.CreateBinge(bingeMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");

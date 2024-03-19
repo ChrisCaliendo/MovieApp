@@ -8,11 +8,14 @@ namespace MovieApp.Models
     public class Binge
     {
 
-        public ICollection<ShowBinge>? ShowBinges { get; set; }
-        public ICollection<Tag>? Tags { get; set; }
+
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? Timespan { get; set; }
+        public User? Author { get; set; }
+        public int UserId { get; set; }
+        public ICollection<ShowBinge>? ShowBinges { get; set; }
+
     }
 }

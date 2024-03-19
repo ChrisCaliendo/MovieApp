@@ -18,8 +18,10 @@ namespace MovieApp
                 //Tag = new Tag() { name = "" };
                 var users = new List<User>()
                 {
-                    new User("Dave", "xxx")
+                    new User()
                     {
+                        Name = "david",
+                        Password = "letmein",
                         Binges = new List<Binge>()
                         {
                             

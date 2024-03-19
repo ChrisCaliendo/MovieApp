@@ -24,231 +24,224 @@ namespace MovieApp.Migrations
 
             modelBuilder.Entity("MovieApp.Models.Binge", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Userid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("timespan")
+                    b.Property<int?>("Timespan")
                         .HasColumnType("int");
 
-                    b.HasKey("id");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Userid");
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Binges");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Show", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Userid")
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Timespan")
                         .HasColumnType("int");
 
-                    b.Property<string>("description")
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("imageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("timespan")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("title")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("id");
-
-                    b.HasIndex("Userid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Shows");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowBinge", b =>
                 {
-                    b.Property<int?>("showId")
+                    b.Property<int?>("ShowId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("bingeId")
+                    b.Property<int?>("BingeId")
                         .HasColumnType("int");
 
-                    b.HasKey("showId", "bingeId");
+                    b.HasKey("ShowId", "BingeId");
 
-                    b.HasIndex("bingeId");
+                    b.HasIndex("BingeId");
 
                     b.ToTable("ShowBinges");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowTag", b =>
                 {
-                    b.Property<int?>("showId")
+                    b.Property<int?>("ShowId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("tagId")
+                    b.Property<int?>("TagId")
                         .HasColumnType("int");
 
-                    b.HasKey("showId", "tagId");
+                    b.HasKey("ShowId", "TagId");
 
-                    b.HasIndex("tagId");
+                    b.HasIndex("TagId");
 
                     b.ToTable("ShowTags");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Tag", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Bingeid")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Userid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Bingeid");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Userid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("MovieApp.Models.User", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("email")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("password")
+                    b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Binge", b =>
                 {
-                    b.HasOne("MovieApp.Models.User", null)
-                        .WithMany("binges")
-                        .HasForeignKey("Userid");
+                    b.HasOne("MovieApp.Models.User", "Author")
+                        .WithMany("Binges")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Show", b =>
                 {
                     b.HasOne("MovieApp.Models.User", null)
-                        .WithMany("favoriteShows")
-                        .HasForeignKey("Userid");
+                        .WithMany("FavoriteShows")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowBinge", b =>
                 {
-                    b.HasOne("MovieApp.Models.Binge", "binge")
-                        .WithMany("showBinges")
-                        .HasForeignKey("bingeId")
+                    b.HasOne("MovieApp.Models.Binge", "Binge")
+                        .WithMany("ShowBinges")
+                        .HasForeignKey("BingeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieApp.Models.Show", "show")
-                        .WithMany("showBinges")
-                        .HasForeignKey("showId")
+                    b.HasOne("MovieApp.Models.Show", "Show")
+                        .WithMany("ShowBinges")
+                        .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("binge");
+                    b.Navigation("Binge");
 
-                    b.Navigation("show");
+                    b.Navigation("Show");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowTag", b =>
                 {
-                    b.HasOne("MovieApp.Models.Show", "show")
-                        .WithMany("showTags")
-                        .HasForeignKey("showId")
+                    b.HasOne("MovieApp.Models.Show", "Show")
+                        .WithMany("ShowTags")
+                        .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieApp.Models.Tag", "tag")
-                        .WithMany("showTags")
-                        .HasForeignKey("tagId")
+                    b.HasOne("MovieApp.Models.Tag", "Tag")
+                        .WithMany("ShowTags")
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("show");
+                    b.Navigation("Show");
 
-                    b.Navigation("tag");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Tag", b =>
                 {
-                    b.HasOne("MovieApp.Models.Binge", null)
-                        .WithMany("tags")
-                        .HasForeignKey("Bingeid");
-
                     b.HasOne("MovieApp.Models.User", null)
-                        .WithMany("favoriteTags")
-                        .HasForeignKey("Userid");
+                        .WithMany("FavoriteTags")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Binge", b =>
                 {
-                    b.Navigation("showBinges");
-
-                    b.Navigation("tags");
+                    b.Navigation("ShowBinges");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Show", b =>
                 {
-                    b.Navigation("showBinges");
+                    b.Navigation("ShowBinges");
 
-                    b.Navigation("showTags");
+                    b.Navigation("ShowTags");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Tag", b =>
                 {
-                    b.Navigation("showTags");
+                    b.Navigation("ShowTags");
                 });
 
             modelBuilder.Entity("MovieApp.Models.User", b =>
                 {
-                    b.Navigation("binges");
+                    b.Navigation("Binges");
 
-                    b.Navigation("favoriteShows");
+                    b.Navigation("FavoriteShows");
 
-                    b.Navigation("favoriteTags");
+                    b.Navigation("FavoriteTags");
                 });
 #pragma warning restore 612, 618
         }

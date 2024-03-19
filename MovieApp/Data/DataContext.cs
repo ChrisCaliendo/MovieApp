@@ -44,6 +44,28 @@ namespace MovieApp.Data
                 .HasOne(b => b.Binge)
                 .WithMany(sb => sb.ShowBinges)
                 .HasForeignKey(s => s.BingeId);
+
+            //One to Many and Many to One Relationship between Binges and User
+            modelBuilder.Entity<Binge>()
+                .HasOne(b => b.Author)
+                .WithMany(ub => ub.Binges)
+                .HasForeignKey(u => u.UserId);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Binges)
+                .WithOne(b => b.Author)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //MMany to one Relationsips between Users with Shows and Tags
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavoriteTags)
+                .WithOne()
+                .IsRequired(false);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavoriteShows)
+                .WithOne()
+                .IsRequired(false);
+
+
         }
 
 
