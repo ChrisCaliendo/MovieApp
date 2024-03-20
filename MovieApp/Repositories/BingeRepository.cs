@@ -27,7 +27,7 @@ namespace MovieApp.Repositories
 
         public int GetBingeTimespan(int bingeId)
         {
-            var ts = _context.Binges.Where(s => s.Id == bingeId);
+            var ts = _context.ShowBinges.Where(s => s.BingeId == bingeId).Select(t => t.Show).ToList();
             if (ts.Count() <= 0) return 0;
             return (int)ts.Sum(t => t.Timespan);
         }
@@ -44,7 +44,7 @@ namespace MovieApp.Repositories
 
         public int GetUnknownTimespans(int bingeId)
         {
-            var ts = _context.Binges.Where(s => s.Id == bingeId && (s.Timespan < 0 || s.Timespan == null));
+            var ts = _context.ShowBinges.Where(s => s.BingeId == bingeId && (s.Show.Timespan < 0 || s.Show.Timespan == null)).Select(t => t.Show).ToList();
             return ts.Count();
         }
 

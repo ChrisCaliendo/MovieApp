@@ -42,12 +42,12 @@ namespace MovieApp.Repositories
 
         public ICollection<Show> GetFavoriteShows(int userId)
         {
-            return _context.Users.Where(u => u.Id == userId).Select(s => s.FavoriteShows).FirstOrDefault();
+            return _context.FavoriteShows.Where(u => u.UserId == userId).Select(s => s.Show).ToList();
         }
 
         public ICollection<Tag> GetFavoriteTags(int userId)
         {
-            return _context.Users.Where(u => u.Id == userId).Select(t => t.FavoriteTags).FirstOrDefault();
+            return _context.FavoriteTags.Where(u => u.TagId == userId).Select(t => t.Tag).ToList();
         }
 
         public ICollection<Binge> GetUserBinges(int userId)

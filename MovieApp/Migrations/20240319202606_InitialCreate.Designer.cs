@@ -12,7 +12,7 @@ using MovieApp.Data;
 namespace MovieApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240319163240_InitialCreate")]
+    [Migration("20240319202606_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,6 +52,36 @@ namespace MovieApp.Migrations
                     b.ToTable("Binges");
                 });
 
+            modelBuilder.Entity("MovieApp.Models.FavoriteShow", b =>
+                {
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ShowId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ShowId");
+
+                    b.HasIndex("ShowId");
+
+                    b.ToTable("FavoriteShows");
+                });
+
+            modelBuilder.Entity("MovieApp.Models.FavoriteTag", b =>
+                {
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("FavoriteTags");
+                });
+
             modelBuilder.Entity("MovieApp.Models.Show", b =>
                 {
                     b.Property<int>("Id")
@@ -72,12 +102,7 @@ namespace MovieApp.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Shows");
                 });
@@ -126,12 +151,7 @@ namespace MovieApp.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
@@ -169,11 +189,42 @@ namespace MovieApp.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("MovieApp.Models.Show", b =>
+            modelBuilder.Entity("MovieApp.Models.FavoriteShow", b =>
                 {
-                    b.HasOne("MovieApp.Models.User", null)
+                    b.HasOne("MovieApp.Models.Show", "Show")
+                        .WithMany()
+                        .HasForeignKey("ShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieApp.Models.User", "User")
                         .WithMany("FavoriteShows")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("ShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Show");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieApp.Models.FavoriteTag", b =>
+                {
+                    b.HasOne("MovieApp.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieApp.Models.User", "User")
+                        .WithMany("FavoriteTags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowBinge", b =>
@@ -212,13 +263,6 @@ namespace MovieApp.Migrations
                     b.Navigation("Show");
 
                     b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("MovieApp.Models.Tag", b =>
-                {
-                    b.HasOne("MovieApp.Models.User", null)
-                        .WithMany("FavoriteTags")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Binge", b =>
