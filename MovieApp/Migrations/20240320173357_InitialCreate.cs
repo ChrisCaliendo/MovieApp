@@ -87,7 +87,6 @@ namespace MovieApp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Timespan = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -118,31 +117,7 @@ namespace MovieApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FavoriteShows_Users_ShowId",
-                        column: x => x.ShowId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FavoriteTags",
-                columns: table => new
-                {
-                    TagId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FavoriteTags", x => new { x.UserId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_FavoriteTags_Tags_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FavoriteTags_Users_UserId",
+                        name: "FK_FavoriteShows_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -184,11 +159,6 @@ namespace MovieApp.Migrations
                 column: "ShowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavoriteTags_TagId",
-                table: "FavoriteTags",
-                column: "TagId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ShowBinges_BingeId",
                 table: "ShowBinges",
                 column: "BingeId");
@@ -204,9 +174,6 @@ namespace MovieApp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "FavoriteShows");
-
-            migrationBuilder.DropTable(
-                name: "FavoriteTags");
 
             migrationBuilder.DropTable(
                 name: "ShowBinges");

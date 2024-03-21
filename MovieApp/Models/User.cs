@@ -8,7 +8,6 @@
         public string? Password { get; set; }
         private Boolean? EmailConfirmed { get; set; }
         public ICollection<FavoriteShow> FavoriteShows { get; set; }
-        public ICollection<FavoriteTag> FavoriteTags { get; set; }
         public ICollection<Binge> Binges { get; set; }
     }
 }

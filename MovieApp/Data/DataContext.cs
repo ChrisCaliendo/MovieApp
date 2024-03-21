@@ -18,7 +18,6 @@ namespace MovieApp.Data
         public DbSet<ShowTag> ShowTags { get; set; }
         public DbSet<ShowBinge> ShowBinges { get; set; }
         public DbSet<FavoriteShow> FavoriteShows { get; set; }
-        public DbSet<FavoriteTag> FavoriteTags { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,26 +61,17 @@ namespace MovieApp.Data
 
             modelBuilder.Entity<FavoriteShow>()
                 .HasKey(pc => new { pc.UserId, pc.ShowId });
-            modelBuilder.Entity<FavoriteShow>()
-                .HasOne(s => s.User)
-                .WithMany(sb => sb.FavoriteShows)
-                .HasForeignKey(b => b.ShowId);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavoriteShows)
+                .WithOne()
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<FavoriteShow>()
                 .HasOne(b => b.Show)
                 .WithMany()
-                .HasForeignKey(s => s.ShowId);
+                .HasForeignKey(s => s.ShowId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //Many to Many Relationsips between Users and Tags
-            modelBuilder.Entity<FavoriteTag>()
-                .HasKey(pc => new { pc.UserId, pc.TagId });
-            modelBuilder.Entity<FavoriteTag>()
-                .HasOne(s => s.User)
-                .WithMany(sb => sb.FavoriteTags)
-                .HasForeignKey(b => b.UserId);
-            modelBuilder.Entity<FavoriteTag>()
-                .HasOne(b => b.Tag)
-                .WithMany()
-                .HasForeignKey(s => s.TagId);
 
 
         }

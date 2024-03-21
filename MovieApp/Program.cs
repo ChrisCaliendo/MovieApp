@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IShowRepository, ShowRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBingeRepository, BingeRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

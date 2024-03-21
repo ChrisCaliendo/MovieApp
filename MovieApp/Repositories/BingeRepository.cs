@@ -15,9 +15,14 @@ namespace MovieApp.Repositories
 
         //Read Methods
 
-        public bool doesBingeExist(int bingeId)
+        public bool DoesBingeExist(int bingeId)
         {
             return _context.Binges.Any(s => s.Id == bingeId);
+        }
+
+        public bool DoesBingeHaveShow(int bingeId, int showId)
+        {
+            return _context.ShowBinges.Any(s => s.BingeId == bingeId && s.ShowId == showId);
         }
 
         public Binge GetBinge(int bingeId)
@@ -42,6 +47,12 @@ namespace MovieApp.Repositories
             return (ICollection<Show>)_context.ShowBinges.Where(x => x.BingeId == bingeId).Select(t => t.Show).ToList();
         }
 
+        public ICollection<Tag> GetTagsInBinge(int bingeId)
+        {
+            return (ICollection<Tag>)_context.ShowBinges.Where(x => x.BingeId == bingeId).SelectMany(b => b.Show.ShowTags).Select(s => s.Tag).Distinct().ToList();
+
+        }
+
         public int GetUnknownTimespans(int bingeId)
         {
             var ts = _context.ShowBinges.Where(s => s.BingeId == bingeId && (s.Show.Timespan < 0 || s.Show.Timespan == null)).Select(t => t.Show).ToList();
@@ -50,9 +61,13 @@ namespace MovieApp.Repositories
 
         //Edit Methods
 
-        public bool CreateBinge(Binge binge)
+        public bool CreateBinge(Binge binge, int authorId)
         {
+            var user = _context.Users.Where(i => i.Id == authorId).FirstOrDefault();
+            user.Binges.Add(binge);
+
             _context.Add(binge);
+            _context.Update(user);
             return Save();
         }
 
@@ -61,5 +76,35 @@ namespace MovieApp.Repositories
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+        
+        public bool UpdateBinge(Binge binge)
+        {
+            _context.Update(binge);
+            return Save();
+        }
+
+        public bool AddShowToBinge(int bingeId, int showId)
+        {
+            var show = _context.Shows.Where(i => i.Id == showId).FirstOrDefault();
+            var binge = _context.Binges.Where(i => i.Id == bingeId).FirstOrDefault();
+
+            var showBinge = new ShowBinge()
+            {
+                Show = show,
+                Binge = binge,
+                ShowId = showId,
+                BingeId = bingeId
+            };
+
+            _context.Add(showBinge);
+            return Save();
+        }
+
+        public bool RemoveShowFromBinge(int bingeId, int showId)
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }

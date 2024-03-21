@@ -2,7 +2,7 @@
 
 namespace MovieApp.Interfaces
 {
-    public interface IMovieRepository
+    public interface IShowRepository
     {
         //Read Methods
         ICollection<Show> GetShows();
@@ -13,6 +13,9 @@ namespace MovieApp.Interfaces
 
         //Edit Methods
         bool CreateShow(Show show);
+        bool AddTagToShow(int showId, int tagId);
+        bool RemoveTagFromShow(int showId, int tagId);
+        bool UpdateShow(Show show);
         bool Save();
     }
 }

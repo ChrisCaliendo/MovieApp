@@ -36,9 +36,6 @@ namespace MovieApp.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Timespan")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -51,10 +48,10 @@ namespace MovieApp.Migrations
 
             modelBuilder.Entity("MovieApp.Models.FavoriteShow", b =>
                 {
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShowId")
+                    b.Property<int>("ShowId")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "ShowId");
@@ -62,21 +59,6 @@ namespace MovieApp.Migrations
                     b.HasIndex("ShowId");
 
                     b.ToTable("FavoriteShows");
-                });
-
-            modelBuilder.Entity("MovieApp.Models.FavoriteTag", b =>
-                {
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("FavoriteTags");
                 });
 
             modelBuilder.Entity("MovieApp.Models.Show", b =>
@@ -194,34 +176,13 @@ namespace MovieApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieApp.Models.User", "User")
+                    b.HasOne("MovieApp.Models.User", null)
                         .WithMany("FavoriteShows")
-                        .HasForeignKey("ShowId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Show");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MovieApp.Models.FavoriteTag", b =>
-                {
-                    b.HasOne("MovieApp.Models.Tag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieApp.Models.User", "User")
-                        .WithMany("FavoriteTags")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tag");
-
-                    b.Navigation("User");
+                    b.Navigation("Show");
                 });
 
             modelBuilder.Entity("MovieApp.Models.ShowBinge", b =>
@@ -284,8 +245,6 @@ namespace MovieApp.Migrations
                     b.Navigation("Binges");
 
                     b.Navigation("FavoriteShows");
-
-                    b.Navigation("FavoriteTags");
                 });
 #pragma warning restore 612, 618
         }

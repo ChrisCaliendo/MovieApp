@@ -4,11 +4,11 @@ using MovieApp.Models;
 
 namespace MovieApp.Repositories
 {
-    public class MovieRepository : IMovieRepository
+    public class ShowRepository : IShowRepository
     {
         private readonly DataContext _context;
 
-        public MovieRepository(DataContext context) 
+        public ShowRepository(DataContext context) 
         {
             _context = context;
         }
@@ -52,6 +52,32 @@ namespace MovieApp.Repositories
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+
+        public bool UpdateShow(Show show)
+        {
+            _context.Update(show);
+            return Save();
+        }
+
+        public bool AddTagToShow(int showId, int tagId)
+        {
+            var show = _context.Shows.Where(i => i.Id == showId).FirstOrDefault();
+            var tag = _context.Tags.Where(i => i.Id == tagId).FirstOrDefault();
+
+            var showTag = new ShowTag()
+            {
+                Show = show,
+                Tag = tag,
+            };
+
+            _context.Add(showTag);
+            return Save();
+        }
+
+        public bool RemoveTagFromShow(int showId, int tagId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

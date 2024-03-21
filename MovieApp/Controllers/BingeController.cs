@@ -15,12 +15,14 @@ namespace MovieApp.Controllers
     {
         private readonly IBingeRepository _bingeRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IShowRepository _showRepository;
         private readonly IMapper _mapper;
 
-        public BingeController(IBingeRepository bingeRepository, IUserRepository userRepository, IMapper mapper)
+        public BingeController(IBingeRepository bingeRepository, IUserRepository userRepository, IShowRepository showRepository, IMapper mapper)
         {
             _bingeRepository = bingeRepository;
             _userRepository = userRepository;
+            _showRepository = showRepository;
             _mapper = mapper;
         }
 
@@ -44,27 +46,43 @@ namespace MovieApp.Controllers
 
         public IActionResult GetBinge(int bingeId)
         {
-            if (!_bingeRepository.doesBingeExist(bingeId))
+            if (!_bingeRepository.DoesBingeExist(bingeId))
                 return NotFound();
 
-            var shows = _mapper.Map<BingeDto>(_bingeRepository.GetBinge(bingeId));
+            var binge = _mapper.Map<BingeDto>(_bingeRepository.GetBinge(bingeId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(shows);
+            return Ok(binge);
         }
 
         [HttpGet("{bingeId}/shows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
 
-        public IActionResult GetShowTags(int bingeId)
+        public IActionResult GetBingeShows(int bingeId)
         {
-            if (!_bingeRepository.doesBingeExist(bingeId))
+            if (!_bingeRepository.DoesBingeExist(bingeId))
                 return NotFound();
 
-            var tags = _mapper.Map<List<ShowDto>>(_bingeRepository.GetShowsInBinge(bingeId));
+            var shows = _mapper.Map<List<ShowDto>>(_bingeRepository.GetShowsInBinge(bingeId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(shows);
+        }
+
+        [HttpGet("{bingeId}/tags")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetBingeTags(int bingeId)
+        {
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+                return NotFound();
+
+            var tags = _mapper.Map<List<TagDto>>(_bingeRepository.GetTagsInBinge(bingeId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -73,15 +91,15 @@ namespace MovieApp.Controllers
 
         //Post Requests
 
-        [HttpPost]
+        [HttpPost("{userId}/newBinge")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateShow([FromQuery] int userId, [FromBody] BingeDto bingeInfo)
+        public IActionResult CreateBinge([FromQuery] int userId, [FromBody] BingeDto bingeInfo)
         {
 
             if (bingeInfo == null)
                 return BadRequest(ModelState);
-            var user = _bingeRepository.GetPublicBinges()
+            var user = _userRepository.GetAllUsers()
                 .Where(u => u.Name.Trim().ToUpper() == bingeInfo.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
@@ -103,12 +121,73 @@ namespace MovieApp.Controllers
             bingeMap.UserId = userId;
             bingeMap.Author = _userRepository.GetUser(userId);
 
-            if (!_bingeRepository.CreateBinge(bingeMap))
+            if (!_bingeRepository.CreateBinge(bingeMap, userId))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
             return Ok("Binge Successfully Created");
+
         }
+
+        [HttpPut("{bingeId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+
+        public IActionResult UpdateBinge([FromQuery] int bingeId, [FromBody] BingeDto updatedBinge)
+        {
+            if (updatedBinge == null)
+                return BadRequest(ModelState);
+            if (bingeId == updatedBinge.Id)
+                return BadRequest(ModelState);
+            if (_bingeRepository.DoesBingeExist(bingeId) == false)
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var bingeMap = _mapper.Map<Binge>(updatedBinge);
+            if (!_bingeRepository.UpdateBinge(bingeMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating binge");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+        }
+
+        [HttpPut("{bingeId}/addShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+
+        public IActionResult AddShowToBinge([FromQuery] int bingeId, [FromQuery] int showId)
+        {
+            if (_bingeRepository.DoesBingeExist(bingeId) == false)
+                return NotFound();
+            if (_showRepository.DoesShowExist(showId) == false)
+            {
+                ModelState.AddModelError("", "Show doesnt exist");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (_bingeRepository.DoesBingeHaveShow(bingeId) == true)
+            {
+                ModelState.AddModelError("", "Show is already in Binge");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!_bingeRepository.AddShowToBinge(bingeId, showId))
+            {
+                ModelState.AddModelError("", "Something went wrong updating binge");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+        }
+
+
+
+
+
     }
 }
