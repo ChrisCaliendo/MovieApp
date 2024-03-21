@@ -19,6 +19,9 @@ namespace MovieApp.Interfaces
         bool AddShowToBinge(int bingeId, int showId);
         bool RemoveShowFromBinge(int bingeId, int showId);
         bool UpdateBinge(Binge binge);
+        bool DeleteBinge(Binge binge);
+        bool DeleteBinges(List<Binge> binges);
+        
         bool Save();
     }
 }

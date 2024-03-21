@@ -10,12 +10,16 @@ namespace MovieApp.Interfaces
         User GetUser(string name);
         bool DoesUserExist(int id);
         bool DoesUserExist(string username);
+        bool IsShowAFavoriteShowOfUser(int userId, int showId);
         ICollection<Show> GetFavoriteShows(int userId);
         ICollection<Binge> GetUserBinges(int userId);
 
         //Edit Methods
         bool CreateUser(User user);
         bool UpdateUser(User user);
+        bool DeleteUser(User user);
+        bool DeleteFavoriteShowList(List<FavoriteShow> favoriteShows);
+
 
         bool AddBingeToUser(int userId, Binge binge);
         bool RemoveBingeFromUser(int userId, Binge binge);

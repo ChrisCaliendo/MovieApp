@@ -1,4 +1,5 @@
-﻿using MovieApp.Data;
+﻿using Azure;
+using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
 
@@ -114,5 +115,10 @@ namespace MovieApp.Repositories
             throw new NotImplementedException();
         }
 
+        public bool DeleteUser(User user)
+        {
+            _context.Remove(user);
+            return Save();
+        }
     }
 }

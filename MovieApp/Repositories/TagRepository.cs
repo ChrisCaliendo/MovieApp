@@ -53,10 +53,24 @@ namespace MovieApp.Repositories
             return Save();
         }
 
+        public bool UpdateTag(Tag tag)
+        {
+            _context.Update(tag);
+            return Save();
+        }
+
+        public bool DeleteTag(Tag tag)
+        {
+            _context.Remove(tag);
+            return Save();
+        }
+
         public bool Save()
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        
     }
 }

@@ -107,7 +107,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult UpdateShow([FromQuery] int showId, [FromBody] ShowDto updatedShow)
+        public IActionResult UpdateShow( int showId, [FromBody] ShowDto updatedShow)
         {
             if (updatedShow == null)
                 return BadRequest(ModelState);
@@ -121,10 +121,62 @@ namespace MovieApp.Controllers
             var showMap = _mapper.Map<Show>(updatedShow);
             if (!_showRepository.UpdateShow(showMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating binge");
+                ModelState.AddModelError("", "Something went wrong updating show");
                 return StatusCode(500, ModelState);
             }
             return NoContent();
+        }
+
+        [HttpPut("{showId}/newTag")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+
+        public IActionResult AddTagToShow( int showId, [FromQuery] int tagId)
+        {
+            if (_tagRepository.DoesTagExist(showId) == false)
+                return NotFound();
+            if (_showRepository.DoesShowExist(tagId) == false)
+            {
+                ModelState.AddModelError("", "Tag doesnt exist");
+                return StatusCode(422, ModelState);
+            }
+
+            if (_showRepository.DoesShowHaveTag(showId, tagId) == true)
+            {
+                ModelState.AddModelError("", "Show already has this Tag");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+
+            if (!_showRepository.AddTagToShow(showId, tagId))
+            {
+                ModelState.AddModelError("", "Something went wrong updating binge");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Binge Successfully Created");
+        }
+
+        [HttpDelete("{showId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteShow(int showId)
+        {
+            if (!_showRepository.DoesShowExist(showId))
+            {
+                return NotFound();
+            }
+            var showToDelete = _showRepository.GetShow(showId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_showRepository.DeleteShow(showToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting Show");
+            }
+            return Ok("Show was successfully deleted");
         }
     }
 

@@ -96,7 +96,10 @@ namespace MovieApp.Repositories
                 BingeId = bingeId
             };
 
-            _context.Add(showBinge);
+            binge.ShowBinges.Add(showBinge);
+            show.ShowBinges.Add(showBinge);
+            _context.Add(binge);
+            _context.Add(show);
             return Save();
         }
 
@@ -105,6 +108,16 @@ namespace MovieApp.Repositories
             throw new NotImplementedException();
         }
 
-        
+        public bool DeleteBinge(Binge binge)
+        {
+            _context.Remove(binge);
+            return Save();
+        }
+
+        public bool DeleteBinges(List<Binge> binges)
+        {
+            _context.RemoveRange(binges);
+            return Save();
+        }
     }
 }

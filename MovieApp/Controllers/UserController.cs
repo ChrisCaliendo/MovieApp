@@ -141,7 +141,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult UpdateUser([FromQuery] int userId, [FromBody] UserDto updatedUser)
+        public IActionResult UpdateUser(int userId, [FromBody] UserDto updatedUser)
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
@@ -155,7 +155,7 @@ namespace MovieApp.Controllers
             var userMap = _mapper.Map<User>(updatedUser);
             if (!_userRepository.UpdateUser(userMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating binge");
+                ModelState.AddModelError("", "Something went wrong updating user");
                 return StatusCode(500, ModelState);
             }
             return NoContent();
@@ -164,7 +164,7 @@ namespace MovieApp.Controllers
         [HttpPost("{userId}/newBinge")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult AddBingetoUser([FromQuery] int userId, [FromBody] BingeDto bingeInfo)
+        public IActionResult AddBingetoUser(int userId, [FromBody] BingeDto bingeInfo)
         {
 
             if (bingeInfo == null)
@@ -196,7 +196,7 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Binge Successfully Created");
+            return Ok("Binge successfully created and attributed to User");
 
         }
 
@@ -205,7 +205,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult AddFavoriteShowToUser([FromQuery] int userId, [FromQuery] int showId)
+        public IActionResult AddFavoriteShowToUser(int userId, [FromQuery] int showId)
         {
             if (_userRepository.DoesUserExist(userId) == false)
                 return NotFound();
@@ -214,21 +214,50 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Show doesnt exist");
                 return StatusCode(422, ModelState);
             }
-            if (!ModelState.IsValid)
-                return BadRequest();
-            if (_userRepository.DoesUserExist(userId) == true)
+
+            if (_userRepository.IsShowAFavoriteShowOfUser(userId, showId) == true)
             {
                 ModelState.AddModelError("", "Show is already a Favorite Show of User");
                 return StatusCode(422, ModelState);
             }
-
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             if (!_userRepository.AddToFavoriteShows(userId, showId))
             {
                 ModelState.AddModelError("", "Something went wrong updating binge");
                 return StatusCode(500, ModelState);
             }
-            return NoContent();
+            return Ok("Show was added to User's Favorite Shows");
+
+        }
+
+        //Delete Requests
+
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUser(int userId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            var bingesToDelete = _userRepository.GetUserBinges(userId);
+            var userToDelete = _userRepository.GetUser(userId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!_bingeRepository.DeleteBinges(bingesToDelete.ToList()))
+            {
+                ModelState.AddModelError("", "Something went wrong when deleting user's binges");
+            }
+            if (!_userRepository.DeleteUser(userToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting User");
+            }
+            return Ok("User was successfully deleted");
         }
 
 

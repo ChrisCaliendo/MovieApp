@@ -135,7 +135,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult UpdateBinge([FromQuery] int bingeId, [FromBody] BingeDto updatedBinge)
+        public IActionResult UpdateBinge( int bingeId, [FromBody] BingeDto updatedBinge)
         {
             if (updatedBinge == null)
                 return BadRequest(ModelState);
@@ -160,7 +160,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult AddShowToBinge([FromQuery] int bingeId, [FromQuery] int showId)
+        public IActionResult AddShowToBinge(int bingeId, [FromQuery] int showId)
         {
             if (_bingeRepository.DoesBingeExist(bingeId) == false)
                 return NotFound();
@@ -169,13 +169,14 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Show doesnt exist");
                 return StatusCode(422, ModelState);
             }
-            if (!ModelState.IsValid)
-                return BadRequest();
-            if (_bingeRepository.DoesBingeHaveShow(bingeId) == true)
+            
+            if (_bingeRepository.DoesBingeHaveShow(bingeId, showId) == true)
             {
                 ModelState.AddModelError("", "Show is already in Binge");
                 return StatusCode(422, ModelState);
             }
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             if (!_bingeRepository.AddShowToBinge(bingeId, showId))
             {
@@ -185,7 +186,25 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
-
+        [HttpDelete("{bingeId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteShow(int bingeId)
+        {
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+            {
+                return NotFound();
+            }
+            var bingeToDelete = _bingeRepository.GetBinge(bingeId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_bingeRepository.DeleteBinge(bingeToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting Binge");
+            }
+            return Ok("Binge was successfully deleted");
+        }
 
 
 

@@ -15,6 +15,8 @@ namespace MovieApp.Interfaces
         
         //Edit Methods
         bool CreateTag(Tag tag);
+        bool UpdateTag(Tag tag);
+        bool DeleteTag(Tag tag);
         bool Save();
 
     }

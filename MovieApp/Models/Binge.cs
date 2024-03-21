@@ -14,7 +14,7 @@ namespace MovieApp.Models
         public string? Description { get; set; }
         public User? Author { get; set; }
         public int UserId { get; set; }
-        public ICollection<ShowBinge>? ShowBinges { get; set; }
+        public ICollection<ShowBinge> ShowBinges { get; set; } = new List<ShowBinge>();
 
     }
 }

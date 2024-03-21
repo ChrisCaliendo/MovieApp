@@ -4,6 +4,7 @@ using MovieApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MovieApp.Dto;
+using MovieApp.Repositories;
 
 namespace MovieApp.Controllers
 {
@@ -116,6 +117,51 @@ namespace MovieApp.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Tag Successfully Created");
+        }
+
+        [HttpPut("{tagId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+
+        public IActionResult UpdateTag(int tagId, [FromBody] UserDto updatedTag)
+        {
+            if (updatedTag == null)
+                return BadRequest(ModelState);
+            if (tagId == updatedTag.Id)
+                return BadRequest(ModelState);
+            if (_tagRepository.DoesTagExist(tagId) == false)
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var tagMap = _mapper.Map<Tag>(updatedTag);
+            if (!_tagRepository.UpdateTag(tagMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating tag");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+        }
+
+        [HttpDelete("{tagId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteTag(int tagId)
+        {
+            if (!_tagRepository.DoesTagExist(tagId))
+            {
+                return NotFound();
+            }
+            var tagToDelete = _tagRepository.GetTag(tagId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_tagRepository.DeleteTag(tagToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting Tag");
+            }
+            return Ok("Tag was successfully deleted");
         }
     }
 }

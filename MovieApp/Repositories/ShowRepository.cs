@@ -20,6 +20,11 @@ namespace MovieApp.Repositories
             return _context.Shows.Any(s => s.Id == id);
         }
 
+        public bool DoesShowHaveTag(int showId, int tagId)
+        {
+            return _context.ShowTags.Any(s => s.TagId == tagId && s.ShowId == showId);
+        }
+
         public Show GetShow(int id)
         {
             return (Show)_context.Shows.Where(s => s.Id == id).FirstOrDefault();
@@ -69,8 +74,15 @@ namespace MovieApp.Repositories
             {
                 Show = show,
                 Tag = tag,
+                ShowId = showId,
+                TagId = tagId
             };
 
+            show.ShowTags.Add(showTag);
+            tag.ShowTags.Add(showTag);
+
+            _context.Update(show);
+            _context.Update(tag);
             _context.Add(showTag);
             return Save();
         }
@@ -78,6 +90,12 @@ namespace MovieApp.Repositories
         public bool RemoveTagFromShow(int showId, int tagId)
         {
             throw new NotImplementedException();
+        }
+
+        public bool DeleteShow(Show show)
+        {
+            _context.Remove(show);
+            return Save();
         }
     }
 }
