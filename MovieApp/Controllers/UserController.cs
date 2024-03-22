@@ -251,9 +251,9 @@ namespace MovieApp.Controllers
                 return BadRequest();
             foreach(var binge in bingesToDelete)
             {
-                if(!_bingeRepository.)
+                if (!_bingeRepository.RemoveAllShowsFromBinge(binge.Id))
                 {
-                    ModelState.AddModelError("", "Something went wrong when deleting binge relations");
+                    ModelState.AddModelError("", "Something went wrong when removing Shows from one of User's Binges");
                 }
             }
             if (!_bingeRepository.DeleteBinges(bingesToDelete))
@@ -352,28 +352,6 @@ namespace MovieApp.Controllers
             }
             return Ok("Binge was successfully deleted");
         }
-
-        [HttpDelete("{userId}/removeAllFavoriteShow")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public IActionResult DeleteFavoriteShowListFromUser(int userId)
-        {
-            if (!_userRepository.DoesUserExist(userId))
-            {
-                return NotFound();
-            }
-            var favoriteShowToDelete = _userRepository.GetFavoriteShowsRelations(userId);
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            if (!_userRepository.DeleteFavoriteShowList(favoriteShowToDelete.ToList()))
-            {
-                ModelState.AddModelError("", "Something went wrong when removing all Favorite Shows");
-            }
-            return Ok("All Favorite Shows were successfully removed");
-        }
-
 
     }
 }

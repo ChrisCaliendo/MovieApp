@@ -144,6 +144,8 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
+        //Delete Requests
+
         [HttpDelete("{tagId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -157,11 +159,34 @@ namespace MovieApp.Controllers
             var tagToDelete = _tagRepository.GetTag(tagId);
             if (!ModelState.IsValid)
                 return BadRequest();
+            if (!_tagRepository.RemoveTagFromAllShows(tagId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Tag from all Shows");
+            }
             if (!_tagRepository.DeleteTag(tagToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting Tag");
             }
             return Ok("Tag was successfully deleted");
+        }
+
+        [HttpDelete("{tagId}/removeFromAllShows")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult RemoveTagFromAllShows(int tagId)
+        {
+            if (!_tagRepository.DoesTagExist(tagId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_tagRepository.RemoveTagFromAllShows(tagId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Tag from all Shows");
+            }
+            return Ok("All Tags was successfully removed from Show");
         }
     }
 }

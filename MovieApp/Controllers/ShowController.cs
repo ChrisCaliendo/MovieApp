@@ -153,10 +153,10 @@ namespace MovieApp.Controllers
 
             if (!_showRepository.AddTagToShow(showId, tagId))
             {
-                ModelState.AddModelError("", "Something went wrong updating binge");
+                ModelState.AddModelError("", "Something went wrong when adding Tag to Show");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Binge Successfully Created");
+            return Ok("Tag Successfully Added to Show");
         }
 
         [HttpDelete("{showId}")]
@@ -172,11 +172,68 @@ namespace MovieApp.Controllers
             var showToDelete = _showRepository.GetShow(showId);
             if (!ModelState.IsValid)
                 return BadRequest();
+            if (!_showRepository.RemoveAllTagsFromShow(showId))
+            {
+                ModelState.AddModelError("", "Something went wrong removing all Tags from Show");
+            }
+            if (!_showRepository.RemoveShowFromAllBinges(showId))
+            {
+                ModelState.AddModelError("", "Something went wrong removing Show from all Binges");
+            }
             if (!_showRepository.DeleteShow(showToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting Show");
             }
             return Ok("Show was successfully deleted");
+        }
+
+        [HttpDelete("{showId}/removeTag")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult RemoveTagFromShow(int showId, [FromQuery]int tagId)
+        {
+            if (!_showRepository.DoesShowExist(showId))
+            {
+                return NotFound();
+            }
+            if (!_tagRepository.DoesTagExist(tagId))
+            {
+                ModelState.AddModelError("", "Tag doesnt exist");
+                return StatusCode(422, ModelState);
+            }
+            if (!_showRepository.DoesShowHaveTag(showId, tagId))
+            {
+                ModelState.AddModelError("", "Show isnt associated with Tag");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_showRepository.RemoveTagFromShow(showId, tagId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Tag from Show");
+            }
+            return Ok("Tag was successfully removed from Show");
+        }
+
+        [HttpDelete("{showId}/removeAllTags")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult RemoveAllTagFromShow(int showId)
+        {
+            if (!_showRepository.DoesShowExist(showId))
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_showRepository.RemoveAllTagsFromShow(showId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Tag from Show");
+            }
+            return Ok("All Tags was successfully removed from Show");
         }
     }
 

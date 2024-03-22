@@ -186,6 +186,8 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
+        //Delete Requests
+
         [HttpDelete("{bingeId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -196,14 +198,65 @@ namespace MovieApp.Controllers
             {
                 return NotFound();
             }
+
             var bingeToDelete = _bingeRepository.GetBinge(bingeId);
             if (!ModelState.IsValid)
                 return BadRequest();
+            if (!_bingeRepository.RemoveAllShowsFromBinge(bingeId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Shows from Binge");
+            }
             if (!_bingeRepository.DeleteBinge(bingeToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting Binge");
             }
             return Ok("Binge was successfully deleted");
+        }
+
+        [HttpDelete("{bingeId}/removeShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult RemoveShowFromBinge(int bingeId, [FromQuery] int showId)
+        {
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+            {
+                return NotFound();
+            }
+            if (_bingeRepository.DoesBingeHaveShow(bingeId, showId) == false)
+            {
+                ModelState.AddModelError("", "Show is not in Binge");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_bingeRepository.RemoveShowFromBinge(bingeId, showId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Shows from Binge");
+            }
+            return Ok("Show was successfully removed from Binge");
+        }
+
+        [HttpDelete("{bingeId}/removeAllShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult RemoveAllShowsFromBinge(int bingeId)
+        {
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+            {
+                return NotFound();
+            }
+
+            var bingeToDelete = _bingeRepository.GetBinge(bingeId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_bingeRepository.RemoveAllShowsFromBinge(bingeId))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing Shows from Binge");
+            }
+
+            return Ok("All Shows were successfully removed from Binge");
         }
 
 
