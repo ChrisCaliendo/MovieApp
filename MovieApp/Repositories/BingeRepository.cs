@@ -1,6 +1,7 @@
 ﻿using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
+using System.Reflection;
 
 namespace MovieApp.Repositories
 {
@@ -97,7 +98,6 @@ namespace MovieApp.Repositories
             };
 
             binge.ShowBinges.Add(showBinge);
-            show.ShowBinges.Add(showBinge);
             _context.Add(binge);
             _context.Add(show);
             return Save();
@@ -110,6 +110,7 @@ namespace MovieApp.Repositories
 
         public bool DeleteBinge(Binge binge)
         {
+            _context.Users.Where(u => u.Id == binge.UserId).FirstOrDefault().Binges.Remove(binge);
             _context.Remove(binge);
             return Save();
         }

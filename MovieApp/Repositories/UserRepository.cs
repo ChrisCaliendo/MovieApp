@@ -53,7 +53,7 @@ namespace MovieApp.Repositories
 
         public ICollection<Binge> GetUserBinges(int userId)
         {
-            return _context.Users.Where(u => u.Id == userId).Select(b => b.Binges).FirstOrDefault();
+            return _context.Binges.Where(u => u.UserId == userId).ToList();
         }
 
         //Edit Methods
@@ -103,20 +103,28 @@ namespace MovieApp.Repositories
                 UserId = userId
             };
 
-            user.FavoriteShows.Add(favoriteShow);
-
-            _context.Update(user);
             _context.Add(favoriteShow);
             return Save();
         }
 
         public bool RemoveFromFavoriteShows(int userId, int showId)
         {
-            throw new NotImplementedException();
+            var favoriteShow = _context.FavoriteShows.Where(u => u.UserId == userId && u.ShowId == showId).FirstOrDefault();
+            _context.Remove(favoriteShow);
+            return Save();
+        }
+
+        public bool DeleteFavoriteShowList(int userId)
+        {
+            var favoriteShows = _context.FavoriteShows.Where(u => u.UserId == userId).ToList();
+            _context.RemoveRange(favoriteShows);
+            return Save();
         }
 
         public bool DeleteUser(User user)
         {
+            var favoriteShows = _context.FavoriteShows.Where(u => u.UserId == user.Id).ToList();
+            _context.FavoriteShows.RemoveRange(favoriteShows);
             _context.Remove(user);
             return Save();
         }

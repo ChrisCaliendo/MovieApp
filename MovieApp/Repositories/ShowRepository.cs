@@ -89,11 +89,18 @@ namespace MovieApp.Repositories
 
         public bool RemoveTagFromShow(int showId, int tagId)
         {
-            throw new NotImplementedException();
+
+            var showBinge = _context.ShowTags.Where(u => u.TagId == tagId && u.ShowId == showId).FirstOrDefault();
+            _context.ShowTags.Remove(showBinge);
+            return Save();
         }
 
         public bool DeleteShow(Show show)
         {
+            var showBinges = _context.ShowBinges.Where(x => x.ShowId == show.Id).ToList();
+            var showTags = _context.ShowTags.Where(x => x.ShowId == show.Id).ToList();
+            _context.RemoveRange(showTags);
+            _context.RemoveRange(showBinges);
             _context.Remove(show);
             return Save();
         }

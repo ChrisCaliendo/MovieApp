@@ -18,7 +18,7 @@ namespace MovieApp.Interfaces
         bool CreateUser(User user);
         bool UpdateUser(User user);
         bool DeleteUser(User user);
-        bool DeleteFavoriteShowList(List<FavoriteShow> favoriteShows);
+        bool DeleteFavoriteShowList(int userId);
 
 
         bool AddBingeToUser(int userId, Binge binge);

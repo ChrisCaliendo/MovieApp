@@ -29,29 +29,34 @@ namespace MovieApp.Data
             modelBuilder.Entity<ShowTag>()
                 .HasOne(s => s.Show)
                 .WithMany(st => st.ShowTags)
-                .HasForeignKey(t => t.ShowId);
+                .HasForeignKey(t => t.ShowId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ShowTag>()
                 .HasOne(t => t.Tag)
                 .WithMany(st => st.ShowTags)
-                .HasForeignKey(s => s.TagId);
+                .HasForeignKey(s => s.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //Joining Show with Binge using showId and bingeId as keys
             modelBuilder.Entity<ShowBinge>()
                 .HasKey(pc => new { pc.ShowId, pc.BingeId });
             modelBuilder.Entity<ShowBinge>()
                 .HasOne(s => s.Show)
-                .WithMany(sb => sb.ShowBinges)
-                .HasForeignKey(b => b.ShowId);
+                .WithMany()
+                .HasForeignKey(b => b.ShowId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ShowBinge>()
                 .HasOne(b => b.Binge)
                 .WithMany(sb => sb.ShowBinges)
-                .HasForeignKey(s => s.BingeId);
+                .HasForeignKey(s => s.BingeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //One to Many and Many to One Relationship between Binges and User
             modelBuilder.Entity<Binge>()
                 .HasOne(b => b.Author)
                 .WithMany(ub => ub.Binges)
-                .HasForeignKey(u => u.UserId);
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Binges)
                 .WithOne(b => b.Author)

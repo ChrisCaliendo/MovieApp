@@ -190,7 +190,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteShow(int bingeId)
+        public IActionResult DeleteBinge(int bingeId)
         {
             if (!_bingeRepository.DoesBingeExist(bingeId))
             {
