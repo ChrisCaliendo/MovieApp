@@ -31,6 +31,7 @@ namespace MovieApp.Repositories
             return _context.FavoriteShows.Any(s => s.UserId == userId && s.ShowId == showId);
         }
 
+
         public ICollection<User> GetAllUsers()
         {
             return _context.Users.OrderBy(t => t.Id).ToList();
@@ -54,6 +55,16 @@ namespace MovieApp.Repositories
         public ICollection<Binge> GetUserBinges(int userId)
         {
             return _context.Binges.Where(u => u.UserId == userId).ToList();
+        }
+
+        public FavoriteShow GetFavoriteShow(int userId, int showId)
+        {
+            return _context.FavoriteShows.Where(u => u.UserId == userId && u.ShowId == showId).FirstOrDefault();
+        }
+
+        public ICollection<FavoriteShow> GetFavoriteShowsRelations(int userId)
+        {
+            return _context.FavoriteShows.Where(u => u.UserId == userId).ToList();
         }
 
         //Edit Methods
@@ -86,9 +97,10 @@ namespace MovieApp.Repositories
             return Save();
         }
 
-        public bool RemoveBingeFromUser(int userId, Binge binge)
+        public bool RemoveBingeFromUser(Binge binge)
         {
-            throw new NotImplementedException();
+            _context.Remove(binge);
+            return Save();
         }
 
         public bool AddToFavoriteShows(int userId, int showId)
@@ -107,24 +119,20 @@ namespace MovieApp.Repositories
             return Save();
         }
 
-        public bool RemoveFromFavoriteShows(int userId, int showId)
+        public bool RemoveFromFavoriteShows(FavoriteShow favoriteShow)
         {
-            var favoriteShow = _context.FavoriteShows.Where(u => u.UserId == userId && u.ShowId == showId).FirstOrDefault();
             _context.Remove(favoriteShow);
             return Save();
         }
 
-        public bool DeleteFavoriteShowList(int userId)
+        public bool DeleteFavoriteShowList(List<FavoriteShow> favoriteShows)
         {
-            var favoriteShows = _context.FavoriteShows.Where(u => u.UserId == userId).ToList();
             _context.RemoveRange(favoriteShows);
             return Save();
         }
 
         public bool DeleteUser(User user)
         {
-            var favoriteShows = _context.FavoriteShows.Where(u => u.UserId == user.Id).ToList();
-            _context.FavoriteShows.RemoveRange(favoriteShows);
             _context.Remove(user);
             return Save();
         }

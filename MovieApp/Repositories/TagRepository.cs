@@ -61,6 +61,8 @@ namespace MovieApp.Repositories
 
         public bool DeleteTag(Tag tag)
         {
+            var showTags = _context.ShowTags.Where(x => x.TagId == tag.Id).ToList();
+            _context.RemoveRange(showTags);
             _context.Remove(tag);
             return Save();
         }

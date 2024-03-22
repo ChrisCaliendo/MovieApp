@@ -78,20 +78,13 @@ namespace MovieApp.Repositories
                 TagId = tagId
             };
 
-            show.ShowTags.Add(showTag);
-            tag.ShowTags.Add(showTag);
-
-            _context.Update(show);
-            _context.Update(tag);
             _context.Add(showTag);
             return Save();
         }
 
-        public bool RemoveTagFromShow(int showId, int tagId)
+        public bool RemoveTagFromShow(ShowTag showTag)
         {
-
-            var showBinge = _context.ShowTags.Where(u => u.TagId == tagId && u.ShowId == showId).FirstOrDefault();
-            _context.ShowTags.Remove(showBinge);
+            _context.ShowTags.Remove(showTag);
             return Save();
         }
 

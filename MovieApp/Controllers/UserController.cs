@@ -244,20 +244,134 @@ namespace MovieApp.Controllers
             {
                 return NotFound();
             }
-            var bingesToDelete = _userRepository.GetUserBinges(userId);
+            var favoriteShowListToDelete = _userRepository.GetFavoriteShowsRelations(userId);
+            var bingesToDelete = _userRepository.GetUserBinges(userId).ToList();
             var userToDelete = _userRepository.GetUser(userId);
             if (!ModelState.IsValid)
                 return BadRequest();
-
-            if (!_bingeRepository.DeleteBinges(bingesToDelete.ToList()))
+            foreach(var binge in bingesToDelete)
+            {
+                if(!_bingeRepository.)
+                {
+                    ModelState.AddModelError("", "Something went wrong when deleting binge relations");
+                }
+            }
+            if (!_bingeRepository.DeleteBinges(bingesToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong when deleting user's binges");
+            }
+            if (!_userRepository.DeleteFavoriteShowList(favoriteShowListToDelete.ToList()))
             {
                 ModelState.AddModelError("", "Something went wrong when deleting user's binges");
             }
             if (!_userRepository.DeleteUser(userToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting User");
+                ModelState.AddModelError("", "Something went wrong when deleting User");
             }
             return Ok("User was successfully deleted");
+        }
+
+        [HttpDelete("{userId}/removeFavoriteShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteFavoriteShowFromUser(int userId, [FromQuery] int showId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            if (_showRepository.DoesShowExist(showId) == false)
+            {
+                ModelState.AddModelError("", "Show doesnt exist");
+                return StatusCode(422, ModelState);
+            }
+            if (_userRepository.IsShowAFavoriteShowOfUser(userId, showId) == true)
+            {
+                ModelState.AddModelError("", "Show is already a Favorite Show of User");
+                return StatusCode(422, ModelState);
+            }
+            var favoriteShowToDelete = _userRepository.GetFavoriteShow(userId, showId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!_userRepository.RemoveFromFavoriteShows(favoriteShowToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing show from User's Favorite Shows");
+            }
+            return Ok("Favorite Show was successfully removed");
+        }
+
+        [HttpDelete("{userId}/removeAllFavoriteShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteFavoriteShowListFromUser(int userId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            var favoriteShowToDelete = _userRepository.GetFavoriteShowsRelations(userId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!_userRepository.DeleteFavoriteShowList(favoriteShowToDelete.ToList()))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing all Favorite Shows");
+            }
+            return Ok("All Favorite Shows were successfully removed");
+        }
+
+        [HttpDelete("{userId}/deleteBinge")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteBingeFromUser(int userId, [FromQuery] int bingeId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+            {
+                ModelState.AddModelError("", "Binge doesnt exist");
+                return StatusCode(422, ModelState);
+            }
+            if (!_bingeRepository.DoesUserHaveBinge(userId, bingeId))
+            {
+                ModelState.AddModelError("", "Binge doesnt belong to User");
+                return StatusCode(422, ModelState);
+            }
+            var bingeToDelete = _bingeRepository.GetBinge(bingeId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+            if (!_bingeRepository.DeleteBinge(bingeToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting Binge");
+            }
+            return Ok("Binge was successfully deleted");
+        }
+
+        [HttpDelete("{userId}/removeAllFavoriteShow")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteFavoriteShowListFromUser(int userId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            var favoriteShowToDelete = _userRepository.GetFavoriteShowsRelations(userId);
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!_userRepository.DeleteFavoriteShowList(favoriteShowToDelete.ToList()))
+            {
+                ModelState.AddModelError("", "Something went wrong when removing all Favorite Shows");
+            }
+            return Ok("All Favorite Shows were successfully removed");
         }
 
 

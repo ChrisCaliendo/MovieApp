@@ -25,6 +25,10 @@ namespace MovieApp.Repositories
         {
             return _context.ShowBinges.Any(s => s.BingeId == bingeId && s.ShowId == showId);
         }
+        public bool DoesUserHaveBinge(int userId, int bingeId)
+        {
+            return _context.Binges.Any(s => s.UserId == userId && s.Id == bingeId);
+        }
 
         public Binge GetBinge(int bingeId)
         {
@@ -48,6 +52,11 @@ namespace MovieApp.Repositories
             return (ICollection<Show>)_context.ShowBinges.Where(x => x.BingeId == bingeId).Select(t => t.Show).ToList();
         }
 
+        public ICollection<Show> GetShowRelationsInBinge(int bingeId)
+        {
+            return (ICollection<Show>)_context.ShowBinges.Where(x => x.BingeId == bingeId).Select(t => t.Show).ToList();
+        }
+
         public ICollection<Tag> GetTagsInBinge(int bingeId)
         {
             return (ICollection<Tag>)_context.ShowBinges.Where(x => x.BingeId == bingeId).SelectMany(b => b.Show.ShowTags).Select(s => s.Tag).Distinct().ToList();
@@ -56,8 +65,12 @@ namespace MovieApp.Repositories
 
         public int GetUnknownTimespans(int bingeId)
         {
-            var ts = _context.ShowBinges.Where(s => s.BingeId == bingeId && (s.Show.Timespan < 0 || s.Show.Timespan == null)).Select(t => t.Show).ToList();
-            return ts.Count();
+            return _context.ShowBinges.Where(s => s.BingeId == bingeId && (s.Show.Timespan < 0 || s.Show.Timespan == null)).Select(t => t.Show).ToList().Count();
+        }
+
+        public bool IsShowInBinge(int bingeId, int showId)
+        {
+            return _context.ShowBinges.Any(u => u.BingeId == bingeId && u.ShowId == showId);
         }
 
         //Edit Methods
@@ -97,20 +110,18 @@ namespace MovieApp.Repositories
                 BingeId = bingeId
             };
 
-            binge.ShowBinges.Add(showBinge);
-            _context.Add(binge);
-            _context.Add(show);
+            _context.Add(showBinge);
             return Save();
         }
 
-        public bool RemoveShowFromBinge(int bingeId, int showId)
+        public bool RemoveShowFromBinge(ShowBinge showBinge)
         {
-            throw new NotImplementedException();
+            _context.ShowBinges.Remove(showBinge);
+            return Save();
         }
 
         public bool DeleteBinge(Binge binge)
         {
-            _context.Users.Where(u => u.Id == binge.UserId).FirstOrDefault().Binges.Remove(binge);
             _context.Remove(binge);
             return Save();
         }
