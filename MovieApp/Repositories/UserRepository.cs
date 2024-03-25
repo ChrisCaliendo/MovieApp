@@ -2,6 +2,8 @@
 using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 
 namespace MovieApp.Repositories
 {
@@ -54,7 +56,7 @@ namespace MovieApp.Repositories
 
         public ICollection<Binge> GetUserBinges(int userId)
         {
-            return _context.Binges.Where(u => u.UserId == userId).ToList();
+            return (ICollection<Binge>)_context.Binges.Where(u => u.UserId == userId).ToList();
         }
 
         public FavoriteShow GetFavoriteShow(int userId, int showId)

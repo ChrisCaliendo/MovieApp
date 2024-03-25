@@ -41,7 +41,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
-        public IActionResult GetTags(int tagId)
+        public IActionResult GetTagById(int tagId)
         {
             if (!_tagRepository.DoesTagExist(tagId))
                 return NotFound();
@@ -58,7 +58,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
-        public IActionResult GetTags(string tagName)
+        public IActionResult GetTagByName(string tagName)
         {
             if (!_tagRepository.DoesTagExist(tagName))
                 return NotFound();

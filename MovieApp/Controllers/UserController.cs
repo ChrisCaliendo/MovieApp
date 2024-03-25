@@ -21,6 +21,8 @@ namespace MovieApp.Controllers
         public UserController(IUserRepository userRepository, IShowRepository showRepository, IBingeRepository bingeRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _bingeRepository = bingeRepository;
+            _showRepository = showRepository;
             _mapper = mapper;
         }
 
@@ -81,7 +83,7 @@ namespace MovieApp.Controllers
             if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
-            var shows = _mapper.Map<BingeDto>(_userRepository.GetUserBinges(userId));
+            var shows = _mapper.Map<List<BingeDto>>(_userRepository.GetUserBinges(userId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -98,7 +100,7 @@ namespace MovieApp.Controllers
             if (!_userRepository.DoesUserExist(userId))
                 return NotFound();
 
-            var shows = _mapper.Map<ShowDto>(_userRepository.GetFavoriteShows(userId));
+            var shows = _mapper.Map<List<ShowDto>>(_userRepository.GetFavoriteShows(userId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -252,10 +254,9 @@ namespace MovieApp.Controllers
                 return BadRequest();
             if (!bingesToDelete.IsNullOrEmpty())
             {
-                foreach (Binge binge in bingesToDelete.ToArray())
+                foreach (var binge in bingesToDelete)
                 {
-                    Console.WriteLine("butsex"+binge.Id);
-                    if (_bingeRepository.GetShowsInBinge(binge.Id).Count() > 0) continue;
+                    if (_bingeRepository.GetShowsInBinge(binge.Id).IsNullOrEmpty()) continue;
                     if (!_bingeRepository.RemoveAllShowsFromBinge(binge.Id))
                     {
                         ModelState.AddModelError("", "Something went wrong when removing Shows from one of User's Binges");
