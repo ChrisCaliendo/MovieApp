@@ -91,7 +91,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/{userId}/shows")]
+        [HttpGet("/{userId}/favoriteShows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
 

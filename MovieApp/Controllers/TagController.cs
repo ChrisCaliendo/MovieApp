@@ -77,11 +77,10 @@ namespace MovieApp.Controllers
 
         public IActionResult GetShowsWithTag(int tagId)
         {
-
             if (!_tagRepository.DoesTagExist(tagId))
                 return NotFound();
-
-            var tags = _mapper.Map<List<ShowDto>>(_tagRepository.GetTags());
+            
+            var tags = _mapper.Map<List<ShowDto>>(_tagRepository.GetShowsWithTag(tagId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

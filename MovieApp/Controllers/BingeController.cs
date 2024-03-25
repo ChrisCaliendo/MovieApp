@@ -183,7 +183,7 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Something went wrong updating binge");
                 return StatusCode(500, ModelState);
             }
-            return NoContent();
+            return Ok("Show was successfully added to Binge");
         }
 
         //Delete Requests

@@ -134,9 +134,9 @@ namespace MovieApp.Controllers
 
         public IActionResult AddTagToShow( int showId, [FromQuery] int tagId)
         {
-            if (_tagRepository.DoesTagExist(showId) == false)
+            if (_showRepository.DoesShowExist(showId) == false)
                 return NotFound();
-            if (_showRepository.DoesShowExist(tagId) == false)
+            if (_tagRepository.DoesTagExist(tagId) == false)
             {
                 ModelState.AddModelError("", "Tag doesnt exist");
                 return StatusCode(422, ModelState);
