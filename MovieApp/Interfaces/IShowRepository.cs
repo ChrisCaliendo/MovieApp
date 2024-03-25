@@ -16,8 +16,11 @@ namespace MovieApp.Interfaces
         bool CreateShow(Show show);
         bool AddTagToShow(int showId, int tagId);
         bool RemoveTagFromShow(int showId, int tagId);
+        bool RemoveAllTagsFromShow(int showId);
+        bool RemoveShowFromAllBinges(int showId);
         bool UpdateShow(Show show);
         bool DeleteShow(Show show);
         bool Save();
+        
     }
 }

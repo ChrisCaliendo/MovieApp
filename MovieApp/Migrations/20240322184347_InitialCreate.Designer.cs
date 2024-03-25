@@ -12,7 +12,7 @@ using MovieApp.Data;
 namespace MovieApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240320173357_InitialCreate")]
+    [Migration("20240322184347_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -91,10 +91,10 @@ namespace MovieApp.Migrations
 
             modelBuilder.Entity("MovieApp.Models.ShowBinge", b =>
                 {
-                    b.Property<int?>("ShowId")
+                    b.Property<int>("ShowId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BingeId")
+                    b.Property<int>("BingeId")
                         .HasColumnType("int");
 
                     b.HasKey("ShowId", "BingeId");
@@ -106,10 +106,10 @@ namespace MovieApp.Migrations
 
             modelBuilder.Entity("MovieApp.Models.ShowTag", b =>
                 {
-                    b.Property<int?>("ShowId")
+                    b.Property<int>("ShowId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TagId")
+                    b.Property<int>("TagId")
                         .HasColumnType("int");
 
                     b.HasKey("ShowId", "TagId");
@@ -197,7 +197,7 @@ namespace MovieApp.Migrations
                         .IsRequired();
 
                     b.HasOne("MovieApp.Models.Show", "Show")
-                        .WithMany("ShowBinges")
+                        .WithMany()
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -233,8 +233,6 @@ namespace MovieApp.Migrations
 
             modelBuilder.Entity("MovieApp.Models.Show", b =>
                 {
-                    b.Navigation("ShowBinges");
-
                     b.Navigation("ShowTags");
                 });
 

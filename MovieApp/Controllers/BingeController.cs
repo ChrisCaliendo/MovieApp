@@ -94,7 +94,7 @@ namespace MovieApp.Controllers
         [HttpPost("{userId}/newBinge")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateBinge([FromQuery] int userId, [FromBody] BingeDto bingeInfo)
+        public IActionResult CreateBinge(int userId, [FromBody] BingeDto bingeInfo)
         {
 
             if (bingeInfo == null)

@@ -87,13 +87,9 @@ namespace MovieApp.Repositories
             return Save();
         }
 
-        public bool AddBingeToUser(int userId, Binge binge)
+        public bool AddBingeToUser(Binge binge)
         {
-            var user = _context.Users.Where(i => i.Id == userId).FirstOrDefault();
-            user.Binges.Add(binge);
-
             _context.Add(binge);
-            _context.Update(user);
             return Save();
         }
 

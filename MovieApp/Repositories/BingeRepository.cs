@@ -1,4 +1,5 @@
-﻿using MovieApp.Data;
+﻿using Microsoft.IdentityModel.Tokens;
+using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
 using System.Reflection;
@@ -114,9 +115,18 @@ namespace MovieApp.Repositories
             return Save();
         }
 
-        public bool RemoveShowFromBinge(ShowBinge showBinge)
+        public bool RemoveShowFromBinge(int bingeId, int showId)
         {
-            _context.ShowBinges.Remove(showBinge);
+            var showBinge = _context.ShowBinges.Where(x => x.ShowId == showId && x.BingeId == bingeId).FirstOrDefault();
+            _context.Remove(showBinge);
+            return Save();
+        }
+
+        public bool RemoveAllShowsFromBinge(int bingeId)
+        {
+            var showBinges = _context.ShowBinges.Where(x => x.BingeId == bingeId).ToList();
+            if (showBinges.IsNullOrEmpty()) return true;
+            _context.RemoveRange(showBinges);
             return Save();
         }
 

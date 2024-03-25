@@ -23,7 +23,7 @@ namespace MovieApp.Interfaces
         bool DeleteFavoriteShowList(List<FavoriteShow> favoriteShows);
 
 
-        bool AddBingeToUser(int userId, Binge binge);
+        bool AddBingeToUser(Binge binge);
         bool RemoveBingeFromUser(Binge binge);
 
         bool AddToFavoriteShows(int userId, int showId);

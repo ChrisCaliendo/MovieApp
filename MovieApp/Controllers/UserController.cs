@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MovieApp.Dto;
 using MovieApp.Interfaces;
 using MovieApp.Models;
@@ -191,7 +192,7 @@ namespace MovieApp.Controllers
             bingeMap.UserId = userId;
             bingeMap.Author = _userRepository.GetUser(userId);
 
-            if (!_userRepository.AddBingeToUser(userId, bingeMap))
+            if (!_userRepository.AddBingeToUser(bingeMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -245,24 +246,32 @@ namespace MovieApp.Controllers
                 return NotFound();
             }
             var favoriteShowListToDelete = _userRepository.GetFavoriteShowsRelations(userId);
-            var bingesToDelete = _userRepository.GetUserBinges(userId).ToList();
+            var bingesToDelete = _userRepository.GetUserBinges(userId);
             var userToDelete = _userRepository.GetUser(userId);
             if (!ModelState.IsValid)
                 return BadRequest();
-            foreach(var binge in bingesToDelete)
+            if (!bingesToDelete.IsNullOrEmpty())
             {
-                if (!_bingeRepository.RemoveAllShowsFromBinge(binge.Id))
+                foreach (Binge binge in bingesToDelete.ToArray())
                 {
-                    ModelState.AddModelError("", "Something went wrong when removing Shows from one of User's Binges");
+                    Console.WriteLine("butsex"+binge.Id);
+                    if (_bingeRepository.GetShowsInBinge(binge.Id).Count() > 0) continue;
+                    if (!_bingeRepository.RemoveAllShowsFromBinge(binge.Id))
+                    {
+                        ModelState.AddModelError("", "Something went wrong when removing Shows from one of User's Binges");
+                    }
+                }
+                if (!_bingeRepository.DeleteBinges(bingesToDelete.ToList()))
+                {
+                    ModelState.AddModelError("", "Something went wrong when deleting user's binges");
                 }
             }
-            if (!_bingeRepository.DeleteBinges(bingesToDelete))
+            if (!favoriteShowListToDelete.IsNullOrEmpty())
             {
-                ModelState.AddModelError("", "Something went wrong when deleting user's binges");
-            }
-            if (!_userRepository.DeleteFavoriteShowList(favoriteShowListToDelete.ToList()))
-            {
-                ModelState.AddModelError("", "Something went wrong when deleting user's binges");
+                if (!_userRepository.DeleteFavoriteShowList(favoriteShowListToDelete.ToList()))
+                {
+                    ModelState.AddModelError("", "Something went wrong when deleting user's binges");
+                }
             }
             if (!_userRepository.DeleteUser(userToDelete))
             {
@@ -351,6 +360,33 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Something went wrong deleting Binge");
             }
             return Ok("Binge was successfully deleted");
+        }
+
+        [HttpDelete("{userId}/DeleteAllBinges")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteAllUserBinges(int userId)
+        {
+            if (!_userRepository.DoesUserExist(userId))
+            {
+                return NotFound();
+            }
+            var bingesToDelete = _userRepository.GetUserBinges(userId).ToList();
+            if (!ModelState.IsValid)
+                return BadRequest();
+            foreach (var binge in bingesToDelete)
+            {
+                if (!_bingeRepository.RemoveAllShowsFromBinge(binge.Id))
+                {
+                    ModelState.AddModelError("", "Something went wrong when removing Shows from one of User's Binges");
+                }
+            }
+            if (!_bingeRepository.DeleteBinges(bingesToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong when deleting user's binges");
+            }
+            return Ok("All of User's Binges were successfully deleted");
         }
 
     }
