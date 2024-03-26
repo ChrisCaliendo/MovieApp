@@ -69,10 +69,17 @@ namespace MovieApp.Repositories
             return _context.ShowBinges.Where(s => s.BingeId == bingeId && (s.Show.Timespan < 0 || s.Show.Timespan == null)).Select(t => t.Show).ToList().Count();
         }
 
+        public int GetShowCountInBinge(int bingeId)
+        {
+            return _context.ShowBinges.Where(x => x.BingeId == bingeId).Select(t => t.Show).Count();
+        }
+
         public bool IsShowInBinge(int bingeId, int showId)
         {
             return _context.ShowBinges.Any(u => u.BingeId == bingeId && u.ShowId == showId);
         }
+
+
 
         //Edit Methods
 

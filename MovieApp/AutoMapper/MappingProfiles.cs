@@ -13,6 +13,7 @@ namespace MovieApp.AutoMapper
             CreateMap<Tag, TagDto>();
             CreateMap<TagDto, Tag>();
             CreateMap<Binge, BingeDto>();
+            CreateMap<Binge, BingeExtDto>();
             CreateMap<BingeDto, Binge>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();

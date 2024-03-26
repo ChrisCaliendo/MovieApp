@@ -57,6 +57,27 @@ namespace MovieApp.Controllers
             return Ok(binge);
         }
 
+        [HttpGet("{bingeId}/fullInfo")]
+        [ProducesResponseType(200, Type = typeof(Show))]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetBingeFull(int bingeId)
+        {
+            if (!_bingeRepository.DoesBingeExist(bingeId))
+                return NotFound();
+
+            var binge = _mapper.Map<BingeExtDto>(_bingeRepository.GetBinge(bingeId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            binge.Timespan = _bingeRepository.GetBingeTimespan(bingeId);
+            binge.IsTimespanAccurate = (_bingeRepository.GetUnknownTimespans(bingeId) > 0) ? false : true;
+            binge.ShowCount = _bingeRepository.GetShowCountInBinge(bingeId);
+
+            return Ok(binge);
+        }
+
         [HttpGet("{bingeId}/shows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
@@ -66,10 +87,11 @@ namespace MovieApp.Controllers
             if (!_bingeRepository.DoesBingeExist(bingeId))
                 return NotFound();
 
-            var shows = _mapper.Map<List<ShowDto>>(_bingeRepository.GetShowsInBinge(bingeId));
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var shows = _mapper.Map<List<ShowDto>>(_bingeRepository.GetShowsInBinge(bingeId));
+            
             return Ok(shows);
         }
 

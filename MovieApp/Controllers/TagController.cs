@@ -37,7 +37,7 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("/tagById/{tagId}")]
+        [HttpGet("byId/{tagId}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
@@ -54,7 +54,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/tagByName/{tagName}")]
+        [HttpGet("byName/{tagName}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
 
@@ -71,7 +71,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/{tagId}/shows")]
+        [HttpGet("{tagId}/shows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
 

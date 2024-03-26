@@ -14,6 +14,7 @@ namespace MovieApp.Interfaces
         ICollection<Tag> GetTagsInBinge(int bingeId);
         int GetBingeTimespan(int bingeId);
         int GetUnknownTimespans(int bingeId);
+        int GetShowCountInBinge(int bingeId);
 
         //Edit Methods
         bool CreateBinge(Binge binge, int authorId);

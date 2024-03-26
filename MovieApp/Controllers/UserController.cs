@@ -40,7 +40,7 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("/userById/{userId}")]
+        [HttpGet("byId/{userId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
 
@@ -57,7 +57,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/userByName/{userId}")]
+        [HttpGet("byName/{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
 
@@ -74,7 +74,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/{userId}/binges")]
+        [HttpGet("{userId}/binges")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Binge>))]
         [ProducesResponseType(400)]
 
@@ -91,7 +91,7 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
-        [HttpGet("/{userId}/favoriteShows")]
+        [HttpGet("{userId}/favoriteShows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
 
@@ -296,9 +296,9 @@ namespace MovieApp.Controllers
                 ModelState.AddModelError("", "Show doesnt exist");
                 return StatusCode(422, ModelState);
             }
-            if (_userRepository.IsShowAFavoriteShowOfUser(userId, showId) == true)
+            if (_userRepository.IsShowAFavoriteShowOfUser(userId, showId) == false)
             {
-                ModelState.AddModelError("", "Show is already a Favorite Show of User");
+                ModelState.AddModelError("", "Show is not a Favorite Show of User");
                 return StatusCode(422, ModelState);
             }
             var favoriteShowToDelete = _userRepository.GetFavoriteShow(userId, showId);
