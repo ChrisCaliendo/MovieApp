@@ -57,7 +57,7 @@ namespace MovieApp.Controllers
             return Ok(show);
         }
 
-        [HttpGet("SearchbyName/{tmdbName}/filteredData")]
+        [HttpGet("SearchbyName/{tmdbName}/firstOrDefault/filteredData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
 
@@ -73,6 +73,7 @@ namespace MovieApp.Controllers
             show.Description = results.Results[0].Overview;
             show.Timespan = null;
             show.ImageUrl = results.Results[0].PosterPath;
+            //use before extension: https://image.tmdb.org/t/p/w220_and_h330_face
 
             return Ok(show);
         }
