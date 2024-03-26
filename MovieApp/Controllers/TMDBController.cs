@@ -8,6 +8,8 @@ using MovieApp.Repositories;
 using MovieApp.Wrapper;
 using TMDbLib.Client;
 using TMDbLib.Objects.Movies;
+using TMDbLib.Objects.General;
+using TMDbLib.Objects.Search;
 
 namespace MovieApp.Controllers
 {
@@ -25,16 +27,54 @@ namespace MovieApp.Controllers
             client = new TMDbClient("a7d81a1952228d5363bd1016273317c8");
         }
 
-        [HttpGet("byId")]
+        [HttpGet("getById/{tmdbID}/rawData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
 
-        public IActionResult GetShowsWithTag()
+        public IActionResult GetRawShowData(int tmdbID)
         {
-            Movie movie = client.GetMovieAsync(1570).Result;
+            Movie movie = client.GetMovieAsync(tmdbID).Result;
             if(movie == null) return NotFound();
-            Console.WriteLine($"Movie name: {movie.Title}");
             return Ok(movie);
+        }
+
+        [HttpGet("getById/{tmdbID}/filteredData")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetFilteredShowData(int tmdbID)
+        {
+            Movie movie = client.GetMovieAsync(tmdbID).Result;
+            if (movie == null) return NotFound();
+            TMDBShowDto show = new TMDBShowDto();
+
+            show.Id = movie.Id;
+            show.Title = movie.Title;
+            show.Description = movie.Overview;
+            show.Timespan = movie.Runtime;
+            show.ImageUrl = movie.PosterPath;
+
+            return Ok(show);
+        }
+
+        [HttpGet("SearchbyName/{tmdbName}/filteredData")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetFilteredShowData(string tmdbName)
+        {
+            SearchContainer<SearchMovie> results = client.SearchMovieAsync(tmdbName).Result;
+            if (results == null || results.Results.Count < 1) return NotFound();
+
+            TMDBShowDto show = new TMDBShowDto();
+
+            show.Id = results.Results[0].Id;
+            show.Title = results.Results[0].Title;
+            show.Description = results.Results[0].Overview;
+            show.Timespan = null;
+            show.ImageUrl = results.Results[0].PosterPath;
+
+            return Ok(show);
         }
     }
 }
