@@ -148,7 +148,7 @@ namespace MovieApp.Controllers
         {
             if (updatedUser == null)
                 return BadRequest(ModelState);
-            if (userId == updatedUser.Id)
+            if (userId != updatedUser.Id)
                 return BadRequest(ModelState);
             if (_userRepository.DoesUserExist(userId) == false)
                 return NotFound();
