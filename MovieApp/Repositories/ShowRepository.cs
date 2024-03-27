@@ -1,4 +1,6 @@
-﻿using MovieApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
 

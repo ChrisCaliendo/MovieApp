@@ -81,13 +81,16 @@ namespace MovieApp.Controllers
 
             if (showInfo == null)
                 return BadRequest(ModelState);
-            var show = _showRepository.GetShows()
-                .Where(s => s.Title.Trim().ToUpper() == showInfo.Title.TrimEnd().ToUpper())
-                .FirstOrDefault();
 
-            if (show != null)
+            if(showInfo.Id == null)
             {
-                ModelState.AddModelError("", "Show already exists");
+                ModelState.AddModelError("", "Addition of new Show requires a unique Id");
+                return StatusCode(422, ModelState);
+            }
+
+            if (_showRepository.DoesShowExist(showInfo.Id))
+            {
+                ModelState.AddModelError("", "A Show with this Id already exists");
                 return StatusCode(422, ModelState);
             }
             if (!ModelState.IsValid)
@@ -111,7 +114,7 @@ namespace MovieApp.Controllers
         {
             if (updatedShow == null)
                 return BadRequest(ModelState);
-            if (showId == updatedShow.Id)
+            if (showId != updatedShow.Id)
                 return BadRequest(ModelState);
             if (_showRepository.DoesShowExist(showId) == false)
                 return NotFound();

@@ -161,7 +161,7 @@ namespace MovieApp.Controllers
         {
             if (updatedBinge == null)
                 return BadRequest(ModelState);
-            if (bingeId == updatedBinge.Id)
+            if (bingeId != updatedBinge.Id)
                 return BadRequest(ModelState);
             if (_bingeRepository.DoesBingeExist(bingeId) == false)
                 return NotFound();

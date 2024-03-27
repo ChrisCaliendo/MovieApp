@@ -12,7 +12,7 @@ using MovieApp.Data;
 namespace MovieApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240322184347_InitialCreate")]
+    [Migration("20240327164802_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -68,9 +68,8 @@ namespace MovieApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");

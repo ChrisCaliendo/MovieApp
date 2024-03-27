@@ -123,11 +123,11 @@ namespace MovieApp.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
 
-        public IActionResult UpdateTag(int tagId, [FromBody] UserDto updatedTag)
+        public IActionResult UpdateTag(int tagId, [FromBody] TagDto updatedTag)
         {
             if (updatedTag == null)
                 return BadRequest(ModelState);
-            if (tagId == updatedTag.Id)
+            if (tagId != updatedTag.Id)
                 return BadRequest(ModelState);
             if (_tagRepository.DoesTagExist(tagId) == false)
                 return NotFound();

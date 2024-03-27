@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieApp.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieApp.Data
 {
@@ -22,6 +23,11 @@ namespace MovieApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //Makes it so that Show identifier must be manually set
+            modelBuilder.Entity<Show>()
+                .Property(x => x.Id)
+                .HasDefaultValue(DatabaseGeneratedOption.None);
 
             //Joining Show with Tag using showId and tagId as keys
             modelBuilder.Entity<ShowTag>()
