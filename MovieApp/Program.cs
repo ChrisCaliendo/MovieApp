@@ -3,6 +3,8 @@ using MovieApp.Data;
 using MovieApp;
 using MovieApp.Interfaces;
 using MovieApp.Repositories;
+using MovieApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthorization();
-//builder.Services.AddIdentityApiEndpoints<User>();
+
+
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -50,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHttpsRedirection();
 

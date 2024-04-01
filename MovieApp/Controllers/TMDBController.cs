@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MovieApp.Dto;
 using MovieApp.Repositories;
-using MovieApp.Wrapper;
 using TMDbLib.Client;
 using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.General;
@@ -76,6 +75,33 @@ namespace MovieApp.Controllers
             //use before extension: https://image.tmdb.org/t/p/w220_and_h330_face
 
             return Ok(show);
+        }
+
+        [HttpGet("getPopularMovies/filteredData")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+
+        public IActionResult GetPopularShowData()
+        {
+            SearchContainer<SearchMovie> results = client.GetMoviePopularListAsync().Result;
+            if (results == null || results.Results.Count < 1) return NotFound();
+
+            List<TMDBShowDto> tMDBShows = new List<TMDBShowDto>();
+            foreach (var movie in results.Results)
+            {
+                TMDBShowDto show = new TMDBShowDto();
+
+                show.Id = movie.Id;
+                show.Title = movie.Title;
+                show.Description = movie.Overview;
+                show.Timespan = null;
+                show.ImageUrl = movie.PosterPath;
+                tMDBShows.Add(show);
+            }
+           
+            //use before extension: https://image.tmdb.org/t/p/w220_and_h330_face
+
+            return Ok(tMDBShows);
         }
     }
 }

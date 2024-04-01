@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieApp.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace MovieApp.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<IdentityUser>
     {
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
