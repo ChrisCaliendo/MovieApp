@@ -5,15 +5,8 @@ using MovieApp.Interfaces;
 using MovieApp.Repositories;
 using MovieApp.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using MovieApp.Identity;
-
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
 
 // Add services to the container.
 
@@ -28,27 +21,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
-        ValidateLifetime = true,
-    };
-});
+builder.Services.AddAuthorization();
 
 
-builder.Services.AddAuthorization(options => {
-    options.AddPolicy(IdentityData.AdminUserPolicyName, p =>
-    p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
-});
-
-builder.Services.AddCors();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -71,18 +46,6 @@ void SeedData(IHost app)
     }
 }
 
-app.UseCors(builder =>
-    {
-        builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .WithMethods("GET", "PUT", "POST", "DELETE")
-            .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
-    }
-);
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -91,11 +54,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
 
 app.UseAuthorization();
 
