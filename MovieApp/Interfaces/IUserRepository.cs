@@ -6,6 +6,8 @@ namespace MovieApp.Interfaces
     {
         //Read Methods
         ICollection<User> GetAllUsers();
+
+        bool Authenticate(string username, string password);
         User GetUser(int id);
         User GetUser(string name);
         bool DoesUserExist(int id);
@@ -30,6 +32,5 @@ namespace MovieApp.Interfaces
         bool RemoveFromFavoriteShows(FavoriteShow favoriteShow);
 
         bool Save();
-
     }
 }
