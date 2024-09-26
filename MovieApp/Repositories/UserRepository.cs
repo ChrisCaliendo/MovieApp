@@ -2,7 +2,6 @@
 using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Models;
-using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 
 namespace MovieApp.Repositories

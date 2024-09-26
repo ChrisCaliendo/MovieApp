@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MovieApp.Data
 {
-    public class DataContext : IdentityDbContext<IdentityUser>
+    public class DataContext : DbContext
     {
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
