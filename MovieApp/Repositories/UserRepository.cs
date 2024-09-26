@@ -16,17 +16,6 @@ namespace MovieApp.Repositories
             _context = context;
         }
 
-        //Authentication Methods
-
-        public bool Authenticate(string username, string password)
-        {
-            //if (await Task.FromResult(_context.Users.SingleOrDefault(x => x.UserName == username && x.Password == password)) != null)
-            //{
-            //    return true;
-            //}
-            return false;
-        }
-
         //Read Methods
 
         public bool DoesUserExist(string username)
@@ -145,7 +134,5 @@ namespace MovieApp.Repositories
             _context.Remove(user);
             return Save();
         }
-
-        
     }
 }

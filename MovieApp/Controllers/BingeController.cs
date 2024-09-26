@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Authentication;
 using MovieApp.Interfaces;
 using MovieApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MovieApp.Dto;
 using MovieApp.Repositories;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
-    [Authorize]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
 
