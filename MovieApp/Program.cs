@@ -46,6 +46,16 @@ void SeedData(IHost app)
     }
 }
 
+app.UseCors(builder =>
+{
+    builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
+        .SetIsOriginAllowedToAllowWildcardSubdomains()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithMethods("GET", "PUT", "POST", "DELETE")
+        .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
+}
+);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
