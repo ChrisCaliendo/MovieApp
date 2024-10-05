@@ -110,10 +110,11 @@ namespace MovieApp.Controllers
 
         //Post Requests
 
+        [HttpPut("newUser")]
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateUser([FromBody] UserDto userInfo)
+        public IActionResult CreateUser([FromBody] LoginDto userInfo)
         {
 
             if (userInfo == null)
@@ -121,6 +122,12 @@ namespace MovieApp.Controllers
             var user = _userRepository.GetAllUsers()
                 .Where(u => u.Name.Trim().ToUpper() == userInfo.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
+
+            if (userInfo.Name == null || userInfo.Password == null)
+            {
+                ModelState.AddModelError("", "Username or Password is null");
+                return StatusCode(422, ModelState);
+            }
 
             if (user != null)
             {
@@ -137,6 +144,20 @@ namespace MovieApp.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("User Successfully Created");
+        }
+
+        [HttpPut("login")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+
+        public IActionResult LoginUser( [FromBody] LoginDto loginInfo)
+        {
+            if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
+            {
+                return Ok();
+            }
+            return Unauthorized(new { Message = "Invalid credentials!" });
         }
 
         [HttpPut("{userId}")]

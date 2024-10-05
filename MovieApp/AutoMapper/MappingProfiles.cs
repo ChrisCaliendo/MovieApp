@@ -17,6 +17,8 @@ namespace MovieApp.AutoMapper
             CreateMap<BingeDto, Binge>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<User, LoginDto>();
+            CreateMap<LoginDto, User>();
         }
     }
 }
