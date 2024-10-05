@@ -5,6 +5,7 @@ using MovieApp.Dto;
 using MovieApp.Interfaces;
 using MovieApp.Models;
 using MovieApp.Repositories;
+using MovieApp.Infastructure;
 
 namespace MovieApp.Controllers
 {
@@ -17,13 +18,15 @@ namespace MovieApp.Controllers
         private readonly IShowRepository _showRepository;
         private readonly IBingeRepository _bingeRepository;
         private readonly IMapper _mapper;
+        private readonly TokenProvider _tokenProvider;
 
-        public UserController(IUserRepository userRepository, IShowRepository showRepository, IBingeRepository bingeRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IShowRepository showRepository, IBingeRepository bingeRepository, IMapper mapper, TokenProvider tokenProvider)
         {
             _userRepository = userRepository;
             _bingeRepository = bingeRepository;
             _showRepository = showRepository;
             _mapper = mapper;
+            _tokenProvider = tokenProvider;
         }
 
         //Get Requests
@@ -155,7 +158,8 @@ namespace MovieApp.Controllers
         {
             if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
             {
-                return Ok();
+                var token = _tokenProvider.Create(loginInfo);
+                return Ok(new { Token = token });
             }
             return Unauthorized(new { Message = "Invalid credentials!" });
         }
