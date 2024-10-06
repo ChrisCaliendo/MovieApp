@@ -146,7 +146,7 @@ namespace MovieApp.Controllers
             return Ok("User Successfully Created");
         }
 
-        [HttpPut("login")]
+        [HttpPost("login")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -160,7 +160,7 @@ namespace MovieApp.Controllers
             return Unauthorized(new { Message = "Invalid credentials!" });
         }
 
-        [HttpPut("{userId}")]
+        [HttpPost("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
