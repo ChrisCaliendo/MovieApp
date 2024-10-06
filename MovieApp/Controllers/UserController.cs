@@ -155,7 +155,7 @@ namespace MovieApp.Controllers
         {
             if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
             {
-                return Ok();
+                return Ok("Login Successful");
             }
             return Unauthorized(new { Message = "Invalid credentials!" });
         }
