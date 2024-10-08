@@ -6,6 +6,12 @@ using MovieApp.Repositories;
 using MovieApp.Models;
 using Microsoft.AspNetCore.Identity;
 using MovieApp.Infastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System;
+using MovieApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +25,22 @@ builder.Services.AddScoped<IBingeRepository, BingeRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenWithAuth();
 
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<TokenProvider>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!)),
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 
 
@@ -54,6 +72,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

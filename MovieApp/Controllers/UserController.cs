@@ -6,6 +6,7 @@ using MovieApp.Interfaces;
 using MovieApp.Models;
 using MovieApp.Repositories;
 using MovieApp.Infastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
@@ -33,7 +34,8 @@ namespace MovieApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
-
+        //[Authorize]
+        //[AllowAnonymous]
         public IActionResult GetAllUsers()
         {
             var tags = _mapper.Map<List<UserDto>>(_userRepository.GetAllUsers());
@@ -42,7 +44,7 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
             return Ok(tags);
         }
-
+        
         [HttpGet("byId/{userId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -158,7 +160,6 @@ namespace MovieApp.Controllers
         {
             if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
             {
-                return Ok("Login Successful");
                 var token = _tokenProvider.Create(loginInfo);
                 return Ok(new { Token = token });
             }
