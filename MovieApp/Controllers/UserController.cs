@@ -12,6 +12,9 @@ namespace MovieApp.Controllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
+
 
     public class UserController : Controller
     {
@@ -34,8 +37,7 @@ namespace MovieApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
-        //[Authorize]
-        //[AllowAnonymous]
+        
         public IActionResult GetAllUsers()
         {
             var tags = _mapper.Map<List<UserDto>>(_userRepository.GetAllUsers());
@@ -119,6 +121,7 @@ namespace MovieApp.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [AllowAnonymous]
         public IActionResult CreateUser([FromBody] LoginDto userInfo)
         {
 
@@ -155,7 +158,7 @@ namespace MovieApp.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-
+        [AllowAnonymous]
         public IActionResult LoginUser( [FromBody] LoginDto loginInfo)
         {
             if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
