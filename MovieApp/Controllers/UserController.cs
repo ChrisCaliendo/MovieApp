@@ -6,11 +6,15 @@ using MovieApp.Interfaces;
 using MovieApp.Models;
 using MovieApp.Repositories;
 using MovieApp.Infastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
+
 
     public class UserController : Controller
     {
@@ -33,7 +37,7 @@ namespace MovieApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
-
+        
         public IActionResult GetAllUsers()
         {
             var tags = _mapper.Map<List<UserDto>>(_userRepository.GetAllUsers());
@@ -42,7 +46,7 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
             return Ok(tags);
         }
-
+        
         [HttpGet("byId/{userId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -117,6 +121,7 @@ namespace MovieApp.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [AllowAnonymous]
         public IActionResult CreateUser([FromBody] LoginDto userInfo)
         {
 
@@ -153,12 +158,11 @@ namespace MovieApp.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-
+        [AllowAnonymous]
         public IActionResult LoginUser( [FromBody] LoginDto loginInfo)
         {
             if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
             {
-                return Ok("Login Successful");
                 var token = _tokenProvider.Create(loginInfo);
                 return Ok(new { Token = token });
             }
