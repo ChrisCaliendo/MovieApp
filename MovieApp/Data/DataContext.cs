@@ -72,7 +72,6 @@ namespace MovieApp.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Many to Many Relationsips between Users and Shows
-
             modelBuilder.Entity<FavoriteShow>()
                 .HasKey(pc => new { pc.UserId, pc.ShowId });
             modelBuilder.Entity<User>()

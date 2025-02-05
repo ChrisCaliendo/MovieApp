@@ -8,6 +8,9 @@ using MovieApp.Repositories;
 
 namespace MovieApp.Controllers
 {
+    /// <summary>
+    /// A controller for managing shows in the application, including creating, retrieving, updating, and deleting shows.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
 
@@ -25,7 +28,10 @@ namespace MovieApp.Controllers
         }
 
         //Get Requests
-
+        /// <summary>
+        /// Retrieves all shows from the repository.
+        /// </summary>
+        /// <returns>Returns a list of all shows.</returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
 
@@ -38,6 +44,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves a specific show by its ID.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <returns>Returns the show data, or a NotFound response if the show does not exist.</returns>
         [HttpGet("{showId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -55,6 +66,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves tags associated with a specific show.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <returns>Returns a list of tags associated with the show.</returns>
         [HttpGet("{showId}/tags")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Tag>))]
         [ProducesResponseType(400)]
@@ -72,7 +88,11 @@ namespace MovieApp.Controllers
         }
 
         //Post Requests
-
+        /// <summary>
+        /// Creates a new show.
+        /// </summary>
+        /// <param name="showInfo">The information for the new show.</param>
+        /// <returns>Returns a success message or an error if the show already exists or there is an issue creating the show.</returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -105,6 +125,12 @@ namespace MovieApp.Controllers
             return Ok("Show Successfully Created");
         }
 
+        /// <summary>
+        /// Updates an existing show by its ID.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <param name="updatedShow">The updated show data.</param>
+        /// <returns>Returns a success message, or an error message if there was an issue updating the show.</returns>
         [HttpPut("{showId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -130,6 +156,12 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Adds a new tag to a show.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns a success message or an error message if the tag already exists for the show.</returns>
         [HttpPut("{showId}/newTag")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -163,7 +195,11 @@ namespace MovieApp.Controllers
         }
 
         //Delete Requests
-
+        /// <summary>
+        /// Deletes a show by its ID.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <returns>Returns a success message, or an error message if there was an issue deleting the show.</returns>
         [HttpDelete("{showId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -192,6 +228,12 @@ namespace MovieApp.Controllers
             return Ok("Show was successfully deleted");
         }
 
+        /// <summary>
+        /// Removes a specific tag from a show.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns a success message, or an error message if the tag is not associated with the show.</returns>
         [HttpDelete("{showId}/removeTag")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -222,6 +264,11 @@ namespace MovieApp.Controllers
             return Ok("Tag was successfully removed from Show");
         }
 
+        /// <summary>
+        /// Removes all tags from a specific show.
+        /// </summary>
+        /// <param name="showId">The unique identifier of the show.</param>
+        /// <returns>Returns a success message or an error if something goes wrong.</returns>
         [HttpDelete("{showId}/removeAllTags")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]

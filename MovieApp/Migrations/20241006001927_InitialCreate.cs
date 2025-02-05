@@ -8,6 +8,9 @@ namespace MovieApp.Migrations
     public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
+        /// <summary>
+        /// Defines the changes to be applied to the database schema when migrating up (creating tables).
+        /// </summary>
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -169,6 +172,9 @@ namespace MovieApp.Migrations
         }
 
         /// <inheritdoc />
+        /// <summary>
+        /// Defines the rollback operations to reverse the changes made in the 'Up' method.
+        /// </summary>
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

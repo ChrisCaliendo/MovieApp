@@ -8,6 +8,9 @@ using MovieApp.Repositories;
 
 namespace MovieApp.Controllers
 {
+    /// <summary>
+    /// A controller for managing tags in the application, including creating, retrieving, updating, and deleting tags.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
 
@@ -23,7 +26,10 @@ namespace MovieApp.Controllers
         }
 
         //Get Requests
-
+        /// <summary>
+        /// Retrieves all tags from the repository.
+        /// </summary>
+        /// <returns>Returns a list of all tags.</returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Tag>))]
 
@@ -37,6 +43,11 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
+        /// <summary>
+        /// Retrieves a specific tag by its ID.
+        /// </summary>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns the tag data, or a NotFound response if the tag does not exist.</returns>
         [HttpGet("byId/{tagId}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
@@ -54,6 +65,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves a specific tag by its name.
+        /// </summary>
+        /// <param name="tagName">The name of the tag.</param>
+        /// <returns>Returns the tag data, or a NotFound response if the tag does not exist.</returns>
         [HttpGet("byName/{tagName}")]
         [ProducesResponseType(200, Type = typeof(Tag))]
         [ProducesResponseType(400)]
@@ -71,6 +87,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves all shows that have a specific tag.
+        /// </summary>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns a list of shows with the given tag.</returns>
         [HttpGet("{tagId}/shows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
@@ -88,7 +109,11 @@ namespace MovieApp.Controllers
         }
 
         //Post Requests
-
+        /// <summary>
+        /// Creates a new tag.
+        /// </summary>
+        /// <param name="tagInfo">The information for the new tag.</param>
+        /// <returns>Returns a success message, or a BadRequest response if the tag already exists or there was an error.</returns>
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -118,6 +143,12 @@ namespace MovieApp.Controllers
             return Ok("Tag Successfully Created");
         }
 
+        /// <summary>
+        /// Updates an existing tag by its ID.
+        /// </summary>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <param name="updatedTag">The updated tag data.</param>
+        /// <returns>Returns a success message, or an error message if there was an issue updating the tag.</returns>
         [HttpPut("{tagId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -144,7 +175,11 @@ namespace MovieApp.Controllers
         }
 
         //Delete Requests
-
+        /// <summary>
+        /// Deletes a tag by its ID.
+        /// </summary>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns a success message, or an error message if there was an issue deleting the tag.</returns>
         [HttpDelete("{tagId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -169,6 +204,11 @@ namespace MovieApp.Controllers
             return Ok("Tag was successfully deleted");
         }
 
+        /// <summary>
+        /// Removes a tag from all shows it is associated with.
+        /// </summary>
+        /// <param name="tagId">The unique identifier of the tag.</param>
+        /// <returns>Returns a success message, or an error message if there was an issue removing the tag.</returns>
         [HttpDelete("{tagId}/removeFromAllShows")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]

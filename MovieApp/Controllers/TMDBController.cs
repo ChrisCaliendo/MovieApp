@@ -12,7 +12,9 @@ using TMDbLib.Objects.Search;
 
 namespace MovieApp.Controllers
 {
-
+    /// <summary>
+    /// A controller for interacting with The Movie Database (TMDB) API to retrieve and process movie data.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
 
@@ -26,6 +28,11 @@ namespace MovieApp.Controllers
             client = new TMDbClient("a7d81a1952228d5363bd1016273317c8");
         }
 
+        /// <summary>
+        /// Gets the raw data for a movie by its TMDB ID.
+        /// </summary>
+        /// <param name="tmdbID">The unique identifier for the movie from TMDB.</param>
+        /// <returns>Returns raw movie data if found, or a NotFound response if the movie is not found.</returns>
         [HttpGet("getById/{tmdbID}/rawData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -37,6 +44,11 @@ namespace MovieApp.Controllers
             return Ok(movie);
         }
 
+        /// <summary>
+        /// Gets filtered movie data by TMDB ID.
+        /// </summary>
+        /// <param name="tmdbID">The unique identifier for the movie from TMDB.</param>
+        /// <returns>Returns filtered movie data if found, or a NotFound response if the movie is not found.</returns>
         [HttpGet("getById/{tmdbID}/filteredData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -56,6 +68,11 @@ namespace MovieApp.Controllers
             return Ok(show);
         }
 
+        /// <summary>
+        /// Searches for a movie by name and returns filtered data for the first result.
+        /// </summary>
+        /// <param name="tmdbName">The name of the movie to search for.</param>
+        /// <returns>Returns filtered movie data for the first result, or a NotFound response if no movie is found.</returns>
         [HttpGet("SearchbyName/{tmdbName}/firstOrDefault/filteredData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -77,6 +94,10 @@ namespace MovieApp.Controllers
             return Ok(show);
         }
 
+        /// <summary>
+        /// Gets a list of popular movies with filtered data.
+        /// </summary>
+        /// <returns>Returns a list of filtered popular movie data.</returns>
         [HttpGet("getPopularMovies/filteredData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

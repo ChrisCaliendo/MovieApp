@@ -10,9 +10,16 @@ using MovieApp.Data;
 
 namespace MovieApp.Migrations
 {
+    /// <summary>
+    /// Represents the model snapshot for the `DataContext` used in migrations to track the state of the database schema.
+    /// </summary>
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
     {
+        /// <summary>
+        /// Configures the model schema and relationships for the entities in the database.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder used to configure the schema.</param>
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

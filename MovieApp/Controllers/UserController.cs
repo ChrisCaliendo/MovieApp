@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MovieApp.Dto;
@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
+    /// <summary>
+    /// Controller for managing user operations including login, creation, and retrieval.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -34,7 +37,10 @@ namespace MovieApp.Controllers
         }
 
         //Get Requests
-
+        /// <summary>
+        /// Retrieves all users from the system.
+        /// </summary>
+        /// <returns>Returns a list of all users.</returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
         
@@ -46,7 +52,12 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
             return Ok(tags);
         }
-        
+
+        /// <summary>
+        /// Retrieves a user by their unique identifier.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to retrieve.</param>
+        /// <returns>Returns the user data if found, otherwise returns NotFound.</returns>
         [HttpGet("byId/{userId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -64,6 +75,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves a user by their unique username.
+        /// </summary>
+        /// <param name="userId">The unique username of the user to retrieve.</param>
+        /// <returns>Returns the user data if found, otherwise returns NotFound.</returns>
         [HttpGet("byName/{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
@@ -81,6 +97,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves all binges associated with a user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to retrieve binges for.</param>
+        /// <returns>Returns a list of all binges associated with the user.</returns>
         [HttpGet("{userId}/binges")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Binge>))]
         [ProducesResponseType(400)]
@@ -98,6 +119,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves all favorite shows of a user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to retrieve favorite shows for.</param>
+        /// <returns>Returns a list of all favorite shows of the user.</returns>
         [HttpGet("{userId}/favoriteShows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
@@ -116,7 +142,11 @@ namespace MovieApp.Controllers
         }
 
         //Post Requests
-
+        /// <summary>
+        /// Creates a new user with the provided login details.
+        /// </summary>
+        /// <param name="userInfo">The login details of the new user.</param>
+        /// <returns>Returns Ok if the user is successfully created, otherwise returns an error.</returns>
         [HttpPut("newUser")]
         [HttpPost]
         [ProducesResponseType(204)]
@@ -154,6 +184,12 @@ namespace MovieApp.Controllers
             return Ok("User Successfully Created");
         }
 
+        /// <summary>
+        /// Logs a user into the system using their provided login credentials.
+        /// </summary>
+        /// <param name="loginInfo">The login credentials of the user.</param>
+        /// <returns>Returns Ok with a success message or Unauthorized if the credentials are incorrect.</returns>
+        [HttpPost("login")]
         [HttpPost("login")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -169,6 +205,12 @@ namespace MovieApp.Controllers
             return Unauthorized(new { Message = "Invalid credentials!" });
         }
 
+        /// <summary>
+        /// Updates a user's information.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to update.</param>
+        /// <param name="updatedUser">The updated user details.</param>
+        /// <returns>Returns Ok if the user is successfully updated, otherwise returns an error.</returns>
         [HttpPost("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -194,6 +236,12 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Adds a new binge to a user's list of binges.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to add the binge to.</param>
+        /// <param name="bingeInfo">The binge details to be added.</param>
+        /// <returns>Returns Ok if the binge is successfully created and attributed to the user, otherwise returns an error.</returns>
         [HttpPost("{userId}/newBinge")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -233,6 +281,12 @@ namespace MovieApp.Controllers
 
         }
 
+        /// <summary>
+        /// Adds a show to the user's list of favorite shows.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to add the show to.</param>
+        /// <param name="showId">The unique identifier of the show to add as a favorite.</param>
+        /// <returns>Returns Ok if the show is successfully added to the user's favorite shows, otherwise returns an error.</returns>
         [HttpPut("{userId}/newFavoriteShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -266,7 +320,11 @@ namespace MovieApp.Controllers
         }
 
         //Delete Requests
-
+        /// <summary>
+        /// Deletes a user from the system by their unique identifier.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to delete.</param>
+        /// <returns>Returns Ok if the user is successfully deleted, otherwise returns an error.</returns>
         [HttpDelete("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -311,6 +369,12 @@ namespace MovieApp.Controllers
             return Ok("User was successfully deleted");
         }
 
+        /// <summary>
+        /// Deletes a specific favorite show from the user's favorites list.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <param name="showId">The unique identifier of the show to remove.</param>
+        /// <returns>Returns Ok if the favorite show is successfully removed, otherwise an error.</returns>
         [HttpDelete("{userId}/removeFavoriteShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -342,6 +406,11 @@ namespace MovieApp.Controllers
             return Ok("Favorite Show was successfully removed");
         }
 
+        /// <summary>
+        /// Removes all favorite shows from a user's list of favorite shows.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user whose favorite shows will be removed.</param>
+        /// <returns>Returns Ok if all favorite shows are successfully removed, otherwise returns an error.</returns>
         [HttpDelete("{userId}/removeAllFavoriteShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -363,6 +432,12 @@ namespace MovieApp.Controllers
             return Ok("All Favorite Shows were successfully removed");
         }
 
+        /// <summary>
+        /// Deletes a binge from the user's list of binges.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user to delete the binge from.</param>
+        /// <param name="bingeId">The unique identifier of the binge to delete.</param>
+        /// <returns>Returns Ok if the binge is successfully deleted, otherwise returns an error.</returns>
         [HttpDelete("{userId}/deleteBinge")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -393,6 +468,11 @@ namespace MovieApp.Controllers
             return Ok("Binge was successfully deleted");
         }
 
+        /// <summary>
+        /// Deletes all binges from the user's list of binges.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user whose binges will be deleted.</param>
+        /// <returns>Returns Ok if all binges are successfully deleted, otherwise returns an error.</returns>
         [HttpDelete("{userId}/DeleteAllBinges")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]

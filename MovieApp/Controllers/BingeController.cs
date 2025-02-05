@@ -8,6 +8,9 @@ using MovieApp.Repositories;
 
 namespace MovieApp.Controllers
 {
+    /// <summary>
+    /// Controller for managing binge-related operations. Handles HTTP requests for creating, updating, retrieving, and deleting binges.
+    /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
 
@@ -27,7 +30,10 @@ namespace MovieApp.Controllers
         }
 
         //Get Requests
-
+        /// <summary>
+        /// Retrieves a list of public binges.
+        /// </summary>
+        /// <returns>Returns a list of public binges.</returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Binge>))]
 
@@ -40,6 +46,11 @@ namespace MovieApp.Controllers
             return Ok(tags);
         }
 
+        /// <summary>
+        /// Retrieves a specific binge by its unique identifier.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge.</param>
+        /// <returns>Returns the binge if found, otherwise returns NotFound.</returns>
         [HttpGet("{bingeId}")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -57,6 +68,11 @@ namespace MovieApp.Controllers
             return Ok(binge);
         }
 
+        /// <summary>
+        /// Retrieves detailed information about a specific binge, including timespan and associated shows.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge.</param>
+        /// <returns>Returns detailed information about the binge.</returns>
         [HttpGet("{bingeId}/fullInfo")]
         [ProducesResponseType(200, Type = typeof(Show))]
         [ProducesResponseType(400)]
@@ -78,6 +94,11 @@ namespace MovieApp.Controllers
             return Ok(binge);
         }
 
+        /// <summary>
+        /// Retrieves the shows associated with a specific binge.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge.</param>
+        /// <returns>Returns a list of shows associated with the binge.</returns>
         [HttpGet("{bingeId}/shows")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
@@ -95,6 +116,11 @@ namespace MovieApp.Controllers
             return Ok(shows);
         }
 
+        /// <summary>
+        /// Retrieves the tags associated with a specific binge.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge.</param>
+        /// <returns>Returns a list of tags associated with the binge.</returns>
         [HttpGet("{bingeId}/tags")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Show>))]
         [ProducesResponseType(400)]
@@ -112,7 +138,12 @@ namespace MovieApp.Controllers
         }
 
         //Post Requests
-
+        /// <summary>
+        /// Creates a new binge for a user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user creating the binge.</param>
+        /// <param name="bingeInfo">The binge details to be created.</param>
+        /// <returns>Returns a success message if the binge was created successfully, otherwise returns an error message.</returns>
         [HttpPost("{userId}/newBinge")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -152,6 +183,12 @@ namespace MovieApp.Controllers
 
         }
 
+        /// <summary>
+        /// Updates an existing binge by its unique identifier.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge to be updated.</param>
+        /// <param name="updatedBinge">The updated binge information.</param>
+        /// <returns>Returns a success message if the binge was updated successfully, otherwise returns an error message.</returns>
         [HttpPut("{bingeId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -177,6 +214,12 @@ namespace MovieApp.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Adds a show to an existing binge by the specified bingeId and showId.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge to which the show will be added.</param>
+        /// <param name="showId">The unique identifier of the show to be added to the binge.</param>
+        /// <returns>Returns a success message if the show was added to the binge successfully, otherwise returns an error message.</returns>
         [HttpPut("{bingeId}/addShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -209,7 +252,11 @@ namespace MovieApp.Controllers
         }
 
         //Delete Requests
-
+        /// <summary>
+        /// Deletes a binge and removes all associated shows.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge to be deleted.</param>
+        /// <returns>Returns a success message if the binge and its associated shows were deleted successfully, otherwise returns an error message.</returns>
         [HttpDelete("{bingeId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -235,6 +282,12 @@ namespace MovieApp.Controllers
             return Ok("Binge was successfully deleted");
         }
 
+        /// <summary>
+        /// Removes a specific show from a binge.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge.</param>
+        /// <param name="showId">The unique identifier of the show to be removed.</param>
+        /// <returns>Returns a success message if the show was successfully removed, otherwise returns an error message.</returns>
         [HttpDelete("{bingeId}/removeShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -259,6 +312,11 @@ namespace MovieApp.Controllers
             return Ok("Show was successfully removed from Binge");
         }
 
+        /// <summary>
+        /// Removes all shows from a binge while keeping the binge itself intact.
+        /// </summary>
+        /// <param name="bingeId">The unique identifier of the binge from which all shows will be removed.</param>
+        /// <returns>Returns a success message if all shows were removed from the binge successfully, otherwise returns an error message.</returns>
         [HttpDelete("{bingeId}/removeAllShow")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
