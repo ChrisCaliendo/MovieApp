@@ -190,7 +190,6 @@ namespace MovieApp.Controllers
         /// <param name="loginInfo">The login credentials of the user.</param>
         /// <returns>Returns Ok with a success message or Unauthorized if the credentials are incorrect.</returns>
         [HttpPost("login")]
-        [HttpPost("login")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

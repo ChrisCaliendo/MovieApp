@@ -104,16 +104,6 @@ namespace MovieApp.Repositories
         }
 
         /// <summary>
-        /// Retrieves a list of binges associated with a user.
-        /// </summary>
-        /// <param name="userId">The user's ID.</param>
-        /// <returns>A collection of binges.</returns>
-        public ICollection<Binge> GetUserBinges(int userId)
-        {
-            return (ICollection<Binge>)_context.Binges.Where(u => u.UserId == userId).ToList();
-        }
-
-        /// <summary>
         /// Retrieves a specific favorite show for a user.
         /// </summary>
         /// <param name="userId">The user's ID.</param>
