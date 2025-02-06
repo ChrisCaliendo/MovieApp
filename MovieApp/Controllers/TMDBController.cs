@@ -9,12 +9,14 @@ using TMDbLib.Client;
 using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
 
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+    [Authorize]
 
     public class TMDBController : Controller
     {

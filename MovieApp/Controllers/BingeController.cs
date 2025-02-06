@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MovieApp.Dto;
 using MovieApp.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieApp.Controllers
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+    [Authorize]
 
     public class BingeController : Controller
     {
