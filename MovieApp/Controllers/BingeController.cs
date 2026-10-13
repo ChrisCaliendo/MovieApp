@@ -6,6 +6,7 @@ using AutoMapper;
 using MovieApp.Dto;
 using MovieApp.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MovieApp.Controllers
 {
@@ -22,6 +23,21 @@ namespace MovieApp.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IShowRepository _showRepository;
         private readonly IMapper _mapper;
+
+        private int? AuthenticatedUserId
+        {
+            get
+            {
+                var userIdClaim = User.FindFirst("sub") ?? User.FindFirst(ClaimTypes.NameIdentifier);
+                return int.TryParse(userIdClaim?.Value, out var userId) ? userId : null;
+            }
+        }
+
+        private bool IsBingeOwner(int bingeId)
+        {
+            return AuthenticatedUserId is int userId
+                && _bingeRepository.DoesUserHaveBinge(userId, bingeId);
+        }
 
         public BingeController(IBingeRepository bingeRepository, IUserRepository userRepository, IShowRepository showRepository, IMapper mapper)
         {
@@ -151,6 +167,8 @@ namespace MovieApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult CreateBinge(int userId, [FromBody] BingeDto bingeInfo)
         {
+            if (AuthenticatedUserId != userId)
+                return Forbid();
 
             if (bingeInfo == null)
                 return BadRequest(ModelState);
@@ -204,10 +222,13 @@ namespace MovieApp.Controllers
                 return BadRequest(ModelState);
             if (_bingeRepository.DoesBingeExist(bingeId) == false)
                 return NotFound();
+            if (!IsBingeOwner(bingeId))
+                return Forbid();
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var bingeMap = _mapper.Map<Binge>(updatedBinge);
+            var existingBinge = _bingeRepository.GetBinge(bingeId);
+            var bingeMap = _mapper.Map(updatedBinge, existingBinge);
             if (!_bingeRepository.UpdateBinge(bingeMap))
             {
                 ModelState.AddModelError("", "Something went wrong updating binge");
@@ -231,6 +252,8 @@ namespace MovieApp.Controllers
         {
             if (_bingeRepository.DoesBingeExist(bingeId) == false)
                 return NotFound();
+            if (!IsBingeOwner(bingeId))
+                return Forbid();
             if (_showRepository.DoesShowExist(showId) == false)
             {
                 ModelState.AddModelError("", "Show doesnt exist");
@@ -269,6 +292,8 @@ namespace MovieApp.Controllers
             {
                 return NotFound();
             }
+            if (!IsBingeOwner(bingeId))
+                return Forbid();
 
             var bingeToDelete = _bingeRepository.GetBinge(bingeId);
             if (!ModelState.IsValid)
@@ -300,6 +325,8 @@ namespace MovieApp.Controllers
             {
                 return NotFound();
             }
+            if (!IsBingeOwner(bingeId))
+                return Forbid();
             if (_bingeRepository.DoesBingeHaveShow(bingeId, showId) == false)
             {
                 ModelState.AddModelError("", "Show is not in Binge");
@@ -329,8 +356,9 @@ namespace MovieApp.Controllers
             {
                 return NotFound();
             }
+            if (!IsBingeOwner(bingeId))
+                return Forbid();
 
-            var bingeToDelete = _bingeRepository.GetBinge(bingeId);
             if (!ModelState.IsValid)
                 return BadRequest();
             if (!_bingeRepository.RemoveAllShowsFromBinge(bingeId))

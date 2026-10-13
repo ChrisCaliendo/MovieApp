@@ -8,7 +8,7 @@ namespace MovieApp.Interfaces
         ICollection<Binge> GetPublicBinges();
         bool DoesBingeExist(int bingeId);
         bool DoesBingeHaveShow(int bingeId, int showId);
-        bool DoesUserHaveBinge(int userId, int showId);
+        bool DoesUserHaveBinge(int userId, int bingeId);
         Binge GetBinge(int bingeId);
         ICollection<Show> GetShowsInBinge(int bingeId);
         ICollection<Tag> GetTagsInBinge(int bingeId);

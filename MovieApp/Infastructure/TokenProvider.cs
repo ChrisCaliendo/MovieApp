@@ -26,10 +26,10 @@ namespace MovieApp.Infastructure
             // Define the token descriptor with claims, expiration time, signing credentials, issuer, and audience.
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // Set the subject claim with the user's name (JWT registered 'sub' claim).
+                // Store the user's ID in the JWT registered 'sub' claim.
                 Subject = new ClaimsIdentity(
                 [
-                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Id}"), // User's name as 'sub' claim.
+                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Id}"),
                 ]),
 
                 // Set the expiration time of the token (1 hour from the current UTC time).

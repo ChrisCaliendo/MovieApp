@@ -7,6 +7,7 @@ using MovieApp.Models;
 using MovieApp.Repositories;
 using MovieApp.Infastructure;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MovieApp.Controllers
 {
@@ -26,6 +27,15 @@ namespace MovieApp.Controllers
         private readonly IBingeRepository _bingeRepository;
         private readonly IMapper _mapper;
         private readonly TokenProvider _tokenProvider;
+
+        private int? AuthenticatedUserId
+        {
+            get
+            {
+                var userIdClaim = User.FindFirst("sub") ?? User.FindFirst(ClaimTypes.NameIdentifier);
+                return int.TryParse(userIdClaim?.Value, out var userId) ? userId : null;
+            }
+        }
 
         public UserController(IUserRepository userRepository, IShowRepository showRepository, IBingeRepository bingeRepository, IMapper mapper, TokenProvider tokenProvider)
         {
@@ -196,9 +206,13 @@ namespace MovieApp.Controllers
         [AllowAnonymous]
         public IActionResult LoginUser( [FromBody] LoginDto loginInfo)
         {
-            if (_userRepository.GetUser(loginInfo.Name).Password.Trim().ToUpper() == loginInfo.Password.Trim().ToUpper())
+            var user = _userRepository.GetUser(loginInfo.Name);
+            if (user != null
+                && user.Password != null
+                && loginInfo.Password != null
+                && string.Equals(user.Password.Trim(), loginInfo.Password.Trim(), StringComparison.OrdinalIgnoreCase))
             {
-                var token = _tokenProvider.Create(loginInfo);
+                var token = _tokenProvider.Create(user);
                 return Ok(new { Token = token });
             }
             return Unauthorized(new { Message = "Invalid credentials!" });
@@ -246,6 +260,8 @@ namespace MovieApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult AddBingetoUser(int userId, [FromBody] BingeDto bingeInfo)
         {
+            if (AuthenticatedUserId != userId)
+                return Forbid();
 
             if (bingeInfo == null)
                 return BadRequest(ModelState);
@@ -330,6 +346,9 @@ namespace MovieApp.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteUser(int userId)
         {
+            if (AuthenticatedUserId != userId)
+                return Forbid();
+
             if (!_userRepository.DoesUserExist(userId))
             {
                 return NotFound();
@@ -443,6 +462,9 @@ namespace MovieApp.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteBingeFromUser(int userId, [FromQuery] int bingeId)
         {
+            if (AuthenticatedUserId != userId)
+                return Forbid();
+
             if (!_userRepository.DoesUserExist(userId))
             {
                 return NotFound();
@@ -478,6 +500,9 @@ namespace MovieApp.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeleteAllUserBinges(int userId)
         {
+            if (AuthenticatedUserId != userId)
+                return Forbid();
+
             if (!_userRepository.DoesUserExist(userId))
             {
                 return NotFound();
