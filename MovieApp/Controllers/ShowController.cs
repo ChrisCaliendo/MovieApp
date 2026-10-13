@@ -98,25 +98,29 @@ namespace MovieApp.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public IActionResult CreateShow([FromBody] ShowDto showInfo)
         {
 
             if (showInfo == null)
                 return BadRequest(ModelState);
 
-            if(showInfo.Id == null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (showInfo.Id == null)
             {
                 ModelState.AddModelError("", "Addition of new Show requires a unique Id");
                 return StatusCode(422, ModelState);
             }
 
-            if (_showRepository.DoesShowExist(showInfo.Id))
+            if (_showRepository.DoesShowExist(showInfo.Id.Value))
             {
                 ModelState.AddModelError("", "A Show with this Id already exists");
                 return StatusCode(422, ModelState);
             }
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            
 
             var showMap = _mapper.Map<Show>(showInfo);
             if (!_showRepository.CreateShow(showMap))

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
 using MovieApp.Interfaces;
 using MovieApp.Models;
 using Microsoft.AspNetCore.Mvc;

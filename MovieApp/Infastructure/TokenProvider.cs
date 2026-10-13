@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using MovieApp.Dto;
+using MovieApp.Models;
 using System.Security.Claims;
 using System.Text;
 
@@ -16,7 +17,7 @@ namespace MovieApp.Infastructure
         /// </summary>
         /// <param name="user">The user object containing the details for the token creation (like the user's name).</param>
         /// <returns>A JWT token as a string.</returns>
-        public string Create(LoginDto user)
+        public string Create(User user)
         {
             string secretKey = configuration["Jwt:Secret"]; // Retrieve the secret key from the application's configuration to sign the token.
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)); // Create a symmetric security key using the secret key. 
@@ -28,7 +29,7 @@ namespace MovieApp.Infastructure
                 // Set the subject claim with the user's name (JWT registered 'sub' claim).
                 Subject = new ClaimsIdentity(
                 [
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Name.ToString()), // User's name as 'sub' claim.
+                    new Claim(JwtRegisteredClaimNames.Sub, $"{user.Id}"), // User's name as 'sub' claim.
                 ]),
 
                 // Set the expiration time of the token (1 hour from the current UTC time).
