@@ -14,7 +14,8 @@ namespace MovieApp.AutoMapper
             CreateMap<TagDto, Tag>();
             CreateMap<Binge, BingeDto>();
             CreateMap<Binge, BingeExtDto>();
-            CreateMap<BingeDto, Binge>();
+            CreateMap<BingeDto, Binge>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<User, LoginDto>();

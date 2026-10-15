@@ -18,7 +18,7 @@ namespace MovieApp.Controllers
     /// </summary>
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
 
     public class TMDBController : Controller
     {
@@ -103,7 +103,6 @@ namespace MovieApp.Controllers
         [HttpGet("getPopularMovies/filteredData")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-
         public IActionResult GetPopularShowData()
         {
             SearchContainer<SearchMovie> results = client.GetMoviePopularListAsync().Result;
